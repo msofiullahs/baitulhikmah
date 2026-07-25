@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jamaah_category', function (Blueprint $table) {
             $table->id();
             $table->foreignId('jamaah_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('kategori_jamaah_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_jamaah_id')->constrained()->cascadeOnDelete();
         });
     }
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('tipe', ['pemasukan', 'pengeluaran']);
             $table->string('warna', 7)->default('#0d5c3e');
             $table->string('ikon')->nullable(); // icon name dari Heroicons
-            $table->foreignId('kas_box_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('cashbox_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

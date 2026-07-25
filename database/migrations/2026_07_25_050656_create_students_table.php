@@ -24,7 +24,6 @@ return new class extends Migration
             $table->enum('status', ['aktif', 'lulus', 'pindah', 'nonaktif'])->default('aktif');
             $table->date('tanggal_masuk');
             $table->timestamps();
-            $table->timestamps();
         });
     }
 

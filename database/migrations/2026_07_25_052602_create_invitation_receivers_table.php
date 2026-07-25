@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('invitation_receivers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('undangan_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('invitation_id')->constrained()->cascadeOnDelete();
             $table->string('nama_penerima');
             $table->string('no_hp')->nullable();
             $table->string('email')->nullable();

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('activity_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kegiatan_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('activity_id')->constrained()->cascadeOnDelete();
             $table->foreignId('jamaah_id')->nullable()->constrained()->nullOnDelete();
             $table->string('nama_tamu')->nullable(); // untuk tamu eksternal
             $table->enum('status_kehadiran', ['hadir', 'tidak_hadir', 'izin'])->default('tidak_hadir');
