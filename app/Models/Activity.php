@@ -24,6 +24,6 @@ class Activity extends Model
     
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(Jamaah::class, 'activity_members')->withPivot('status_kehadiran')->withTimestamps();
+        return $this->belongsToMany(Jamaah::class, 'activity_members')->using(ActivityMember::class)->withPivot('status_kehadiran')->withTimestamps();
     }
 }

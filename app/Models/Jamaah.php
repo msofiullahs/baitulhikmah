@@ -47,4 +47,12 @@ class Jamaah extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function activities(): BelongsToMany
+    {
+        return $this->belongsToMany(Activity::class, 'activity_members')
+                    ->using(ActivityMember::class)
+                    ->withPivot('status_kehadiran')
+                    ->withTimestamps();
+    }
 }
