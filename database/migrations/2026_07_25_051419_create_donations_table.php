@@ -25,6 +25,7 @@ return new class extends Migration
             $table->enum('metode', ['tunai', 'transfer', 'qris'])->default('tunai');
             $table->string('bukti_transfer')->nullable();
             $table->boolean('is_anonymous')->default(false);
+            $table->boolean('is_public')->default(false);
             $table->text('catatan')->nullable();
             $table->foreignId('cashbox_id')->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();

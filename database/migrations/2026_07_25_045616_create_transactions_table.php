@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignId('jamaah_id')->nullable()->constrained()->nullOnDelete();
             $table->enum('metode', ['tunai', 'transfer', 'qris', 'lainnya'])->default('tunai');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('approved');
+            $table->boolean('is_public')->default(false);
             $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('approved_at')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
