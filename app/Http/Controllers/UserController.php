@@ -11,13 +11,13 @@ use Illuminate\Validation\Rules;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:manage-users');
-    }
-
     public function index()
     {
+        // Check permission inline
+        if (!auth()->user()->can('manage-users')) {
+            abort(403);
+        }
+        
         return Inertia::render('Users/Index', [
             'users' => User::with('roles')->latest()->paginate(15),
         ]);

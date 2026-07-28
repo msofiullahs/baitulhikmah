@@ -70,7 +70,7 @@ const deleteItem = (item) => {
           <tr v-for="item in items.data" :key="item.id" class="hover:bg-gray-50">
             <td class="px-6 py-4">{{ item.nama }}</td>
             <td class="px-6 py-4 text-center">
-              <button @click="/* openEdit */" class="text-gray-400 hover:text-primary mx-1"><PencilIcon class="w-5 h-5 inline" /></button>
+              <button @click="/* openEdit placeholder */" class="text-gray-400 hover:text-primary mx-1"><PencilIcon class="w-5 h-5 inline" /></button>
               <button @click="deleteItem(item)" class="text-gray-400 hover:text-red-600 mx-1"><TrashIcon class="w-5 h-5 inline" /></button>
             </td>
           </tr>
