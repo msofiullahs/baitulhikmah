@@ -80,7 +80,7 @@ const resetFilter = () => {
       </div>
 
       <!-- 3. Content Grid (Card Layout) -->
-      <div v-if="items.data.length > 0" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div v-if="items && items.data && items.data.length > 0" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         <div v-for="item in items.data" :key="item.id" class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col">
           
           <!-- Gambar/Poster (Opsional) -->
@@ -137,7 +137,7 @@ const resetFilter = () => {
       </div>
 
       <!-- 4. Pagination -->
-      <div v-if="items.data.length > 0" class="mb-16">
+      <div v-if="items && items.data && items.data.length > 0" class="mb-16">
         <Pagination :links="items.links" />
       </div>
 

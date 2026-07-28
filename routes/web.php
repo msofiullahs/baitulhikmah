@@ -70,6 +70,8 @@ Route::middleware([
     // Jumah (Khatib & Jadwal)
     Route::get('jumah', [JumahController::class, 'index'])->name('jumah.index');
     Route::post('jumah/khatib', [JumahController::class, 'storeKhatib'])->name('jumah.khatib.store');
+    Route::put('jumah/khatib/{khatib}', [JumahController::class, 'updateKhatib'])->name('jumah.khatib.update');
+    Route::delete('jumah/khatib/{khatib}', [JumahController::class, 'destroyKhatib'])->name('jumah.khatib.destroy');
     Route::post('jumah/schedule', [JumahController::class, 'storeSchedule'])->name('jumah.schedule.store');
     Route::delete('jumah/schedule/{schedule}', [JumahController::class, 'destroySchedule'])->name('jumah.schedule.destroy');
 
