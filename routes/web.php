@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +19,8 @@ use App\Http\Controllers\Public\PublicFinanceController;
 use App\Http\Controllers\Public\PublicScheduleController;
 use App\Http\Controllers\Public\PublicAnnouncementController;
 use App\Http\Controllers\Public\PublicContactController;
+use App\Http\Controllers\RoleManagementController;
+use App\Http\Controllers\SettingsController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -79,4 +82,27 @@ Route::middleware([
     Route::post('ziswaf/donations', [ZiswafController::class, 'storeDonation'])->name('ziswaf.donations.store');
     Route::get('ziswaf/mustahiq', [ZiswafController::class, 'mustahiqIndex'])->name('ziswaf.mustahiq.index');
     Route::post('ziswaf/distributions', [ZiswafController::class, 'storeDistribution'])->name('ziswaf.distributions.store');
+
+    // Super Admin Routes
+    Route::middleware(['can:manage-settings'])->group(function () {
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::get('/settings/general', [SettingsController::class, 'general'])->name('settings.general');
+        Route::get('/settings/finance', [SettingsController::class, 'finance'])->name('settings.finance');
+        Route::get('/settings/masjid', [SettingsController::class, 'masjid'])->name('settings.masjid');
+        Route::get('/settings/social', [SettingsController::class, 'social'])->name('settings.social');
+    });
+
+    Route::middleware(['can:manage-roles'])->group(function () {
+        Route::get('/roles', [RoleManagementController::class, 'roles'])->name('roles.index');
+        Route::post('/roles', [RoleManagementController::class, 'storeRole'])->name('roles.store');
+        Route::put('/roles/{role}', [RoleManagementController::class, 'updateRole'])->name('roles.update');
+        Route::delete('/roles/{role}', [RoleManagementController::class, 'destroyRole'])->name('roles.destroy');
+        Route::get('/permissions', [RoleManagementController::class, 'permissions'])->name('permissions.index');
+    });
+
+    // User Management (Ketua & Super Admin)
+    Route::middleware(['can:manage-users'])->group(function () {
+        Route::resource('users', UserController::class);
+    });
 });

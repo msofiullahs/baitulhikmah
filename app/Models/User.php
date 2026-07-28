@@ -9,9 +9,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Permission\Traits\HasRoles; 
 
 class User extends Authenticatable
 {
@@ -21,9 +21,9 @@ class User extends Authenticatable
     use HasFactory;
 
     use HasProfilePhoto;
-    use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -87,5 +87,15 @@ class User extends Authenticatable
     public function createdInvitations(): HasMany
     {
         return $this->hasMany(Invitation::class, 'created_by');
+    }
+
+    /**
+     * PENTING UNTUK FORTIFY:
+     * Method ini memberi tahu Fortify/Laravel untuk menggunakan kolom 'username' 
+     * sebagai identifier saat login, bukan 'email'.
+     */
+    public function username()
+    {
+        return 'username';
     }
 }

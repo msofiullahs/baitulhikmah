@@ -1,32 +1,18 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useForm, Head, Link } from '@inertiajs/vue3';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-
-defineProps({
-    canResetPassword: Boolean,
-    status: String,
-});
+import Checkbox from '@/Components/Checkbox.vue';
 
 const form = useForm({
-    email: '',
+    username: '', // <-- UBAH DARI email KE username
     password: '',
-    remember: false,
+    remember: false
 });
-
-const submit = () => {
-    form.transform(data => ({
-        ...data,
-        remember: form.remember ? 'on' : '',
-    })).post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
 </script>
 
 <template>
@@ -37,25 +23,23 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
+        <form @submit.prevent="form.post(route('login'))">
+            <!-- Input Username -->
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="username" value="Username" />
                 <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
+                    id="username"
+                    v-model="form.username"
+                    type="text"
                     class="mt-1 block w-full"
                     required
                     autofocus
                     autocomplete="username"
                 />
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
+            <!-- Input Password -->
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
                 <TextInput
