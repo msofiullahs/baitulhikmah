@@ -37,26 +37,6 @@ const allMenus = [
 
 // Filter menu berdasarkan role
 const navigation = computed(() => {
-  const menus = [
-    { name: 'Dashboard', href: 'dashboard', icon: HomeIcon, roles: ['all'] },
-    { name: 'Arus Kas', href: 'transactions.index', icon: CurrencyDollarIcon, roles: ['Ketua', 'Wakil Ketua', 'Bendahara', 'Sie Sarana Prasarana'] },
-    { name: 'Inventaris', href: 'assets.index', icon: CubeTransparentIcon, roles: ['Ketua', 'Wakil Ketua', 'Bendahara', 'Sie Sarana Prasarana', 'Sie Kebersihan'] },
-    { name: 'Undangan', href: 'invitations.index', icon: EnvelopeIcon, roles: ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Sie Peribadatan & Dakwah', 'Sie Humas & Kemasyarakatan', 'Sie Kemudaan dan Remaja Masjid', 'Sie Pemberdayaan Perempuan'] },
-    { name: 'Kegiatan', href: 'activities.index', icon: CalendarIcon, roles: ['all'] },
-    { name: 'Jamaah', href: 'jamaah.index', icon: UsersIcon, roles: ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Sie Humas & Kemasyarakatan', 'Sie Kemudaan dan Remaja Masjid', 'Sie Pemberdayaan Perempuan'] },
-    { name: 'TPQ', href: 'tpq.students.index', icon: BookOpenIcon, roles: ['Ketua', 'Wakil Ketua', 'Sie Pendidikan'] },
-    { name: 'ZISWAF', href: 'ziswaf.donations.index', icon: CurrencyDollarIcon, roles: ['Ketua', 'Wakil Ketua', 'Bendahara'] },
-    { name: 'Jadwal Jumat', href: 'jumah.index', icon: CalendarIcon, roles: ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Sie Peribadatan & Dakwah'] },
-    { name: 'Pengumuman', href: 'announcements.index', icon: MegaphoneIcon, roles: ['all'] },
-    { name: 'Laporan', href: 'reports.index', icon: DocumentReportIcon, roles: ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara'] },
-  ];
-
-  // Tambahkan menu User Management untuk Ketua & Super Admin
-  if (isKetua.value || isSuperAdmin.value) {
-    menus.push({ name: 'Pengguna', href: 'users.index', icon: UserGroupIcon, roles: ['Ketua', 'Super Admin'] });
-  }
-
-  // Tambahkan menu System untuk Super Admin
   if (isSuperAdmin.value) {
     // Super Admin melihat SEMUA menu
     return allMenus;

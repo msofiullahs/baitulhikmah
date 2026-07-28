@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { router, Link, Head, useForm } from '@inertiajs/vue3';
-import { PlusIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon, SpeakerphoneIcon, ExclamationTriangleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue';
