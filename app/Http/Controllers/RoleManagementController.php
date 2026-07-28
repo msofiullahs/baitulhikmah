@@ -12,13 +12,13 @@ use Illuminate\Validation\Rules;
 
 class RoleManagementController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:manage-roles');
-    }
-
     public function roles()
     {
+        // Check permission inline
+        if (!auth()->user()->can('manage-roles')) {
+            abort(403);
+        }
+        
         return Inertia::render('Settings/Roles', [
             'roles' => Role::with('permissions')->get()->map(fn($role) => [
                 'id' => $role->id,
