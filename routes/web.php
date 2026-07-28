@@ -21,6 +21,7 @@ use App\Http\Controllers\Public\PublicAnnouncementController;
 use App\Http\Controllers\Public\PublicContactController;
 use App\Http\Controllers\RoleManagementController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\Reports\ReportController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -108,5 +109,15 @@ Route::middleware([
     // User Management (Ketua & Super Admin)
     Route::middleware(['can:manage-users'])->group(function () {
         Route::resource('users', UserController::class);
+    });
+
+    // Reports
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/finance', [ReportController::class, 'finance'])->name('finance');
+        Route::get('/jamaah', [ReportController::class, 'jamaah'])->name('jamaah');
+        Route::get('/activities', [ReportController::class, 'activities'])->name('activities');
+        Route::get('/ziswaf', [ReportController::class, 'ziswaf'])->name('ziswaf');
+        Route::get('/assets', [ReportController::class, 'assets'])->name('assets');
     });
 });
