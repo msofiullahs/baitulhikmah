@@ -99,7 +99,14 @@ Route::middleware([
         Route::post('/roles', [RoleManagementController::class, 'storeRole'])->name('roles.store');
         Route::put('/roles/{role}', [RoleManagementController::class, 'updateRole'])->name('roles.update');
         Route::delete('/roles/{role}', [RoleManagementController::class, 'destroyRole'])->name('roles.destroy');
+        Route::post('/roles/clone/{role}', [RoleManagementController::class, 'cloneRole'])->name('roles.clone');
+        Route::post('/roles/{role}/permissions', [RoleManagementController::class, 'addPermission'])->name('roles.permissions.add');
+        Route::delete('/roles/{role}/permissions/{permission}', [RoleManagementController::class, 'removePermission'])->name('roles.permissions.remove');
+        
         Route::get('/permissions', [RoleManagementController::class, 'permissions'])->name('permissions.index');
+        Route::post('/permissions', [RoleManagementController::class, 'storePermission'])->name('permissions.store');
+        Route::put('/permissions/{permission}', [RoleManagementController::class, 'updatePermission'])->name('permissions.update');
+        Route::delete('/permissions/{permission}', [RoleManagementController::class, 'destroyPermission'])->name('permissions.destroy');
     });
 
     // User Management (Ketua & Super Admin)
