@@ -2,16 +2,21 @@
 import { useForm, Head, Link } from '@inertiajs/vue3';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
+import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import Checkbox from '@/Components/Checkbox.vue';
+
+defineProps({
+    canResetPassword: Boolean,
+    status: String,
+});
 
 const form = useForm({
-    username: '', // <-- UBAH DARI email KE username
+    username: '', // ✅ Harus 'username', bukan 'email'
     password: '',
-    remember: false
+    remember: false,
 });
 </script>
 
@@ -23,8 +28,11 @@ const form = useForm({
             <AuthenticationCardLogo />
         </template>
 
+        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+            {{ status }}
+        </div>
+
         <form @submit.prevent="form.post(route('login'))">
-            <!-- Input Username -->
             <div>
                 <InputLabel for="username" value="Username" />
                 <TextInput
@@ -39,7 +47,6 @@ const form = useForm({
                 <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
-            <!-- Input Password -->
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
                 <TextInput
@@ -61,7 +68,7 @@ const form = useForm({
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
                     Forgot your password?
                 </Link>
 

@@ -83,6 +83,10 @@ Route::middleware([
     Route::get('ziswaf/mustahiq', [ZiswafController::class, 'mustahiqIndex'])->name('ziswaf.mustahiq.index');
     Route::post('ziswaf/distributions', [ZiswafController::class, 'storeDistribution'])->name('ziswaf.distributions.store');
 
+    // Route::get('reports', function () {
+    //     return Inertia::render('Reports/Index');
+    // })->name('reports.index');
+
     // Super Admin Routes
     Route::middleware(['can:manage-settings'])->group(function () {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
