@@ -3,53 +3,67 @@ import { ref } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
+import Modal from '@/Components/Modal.vue';
+import { Head, useForm, router } from '@inertiajs/vue3';
 
 const props = defineProps({
-    permissions: Object,
+    permissions: Array,
 });
+
+const showPermissionModal = ref(false);
+const editingPermission = ref(null);
 
 const form = useForm({
     name: '',
-    permissions: [],
+    display_name: '',
+    description: '',
 });
 
-const permissionGroups = ref(props.permissions);
-
-const togglePermission = (permission) => {
-    const index = form.permissions.indexOf(permission);
-    if (index > -1) {
-        form.permissions.splice(index, 1);
-    } else {
-        form.permissions.push(permission);
-    }
-};
-
-const selectAll = (group) => {
-    group.forEach(perm => {
-        if (!form.permissions.includes(perm)) {
-            form.permissions.push(perm);
-        }
-    });
-};
-
-const deselectAll = (group) => {
-    form.permissions = form.permissions.filter(p => !group.includes(p));
-};
-
 const createPermission = () => {
-    // Placeholder untuk fitur create permission
-    Swal.fire('Info', 'Fitur create permission akan ditambahkan', 'info');
+    editingPermission.value = null;
+    form.name = '';
+    form.display_name = '';
+    form.description = '';
+    showPermissionModal.value = true;
+};
+
+const editPermission = (permission) => {
+    editingPermission.value = permission;
+    form.name = permission.name;
+    form.display_name = permission.display_name || '';
+    form.description = permission.description || '';
+    showPermissionModal.value = true;
+};
+
+const deletePermission = (permission) => {
+    if (confirm(`Apakah Anda yakin ingin menghapus permission "${permission.name}"?`)) {
+        router.delete(route('permissions.destroy', permission.id));
+    }
 };
 
 const submit = () => {
-    if (form.permissions.length === 0) {
-        Swal.fire('Error', 'Pilih minimal satu permission', 'error');
-        return;
+    if (editingPermission.value) {
+        router.put(route('permissions.update', editingPermission.value.id), form, {
+            onSuccess: () => {
+                showPermissionModal.value = false;
+                resetForm();
+            },
+        });
+    } else {
+        router.post(route('permissions.store'), form, {
+            onSuccess: () => {
+                showPermissionModal.value = false;
+                resetForm();
+            },
+        });
     }
-    // Logic untuk create role baru bisa ditambahkan di sini
-    Swal.fire('Success', 'Role berhasil dibuat', 'success');
+};
+
+const resetForm = () => {
+    form.name = '';
+    form.display_name = '';
+    form.description = '';
+    editingPermission.value = null;
 };
 </script>
 
@@ -70,76 +84,91 @@ const submit = () => {
                     </PrimaryButton>
                 </div>
 
-                <!-- Permission Groups -->
+                <!-- Permissions Grid -->
                 <div class="bg-white rounded-lg shadow overflow-hidden">
                     <div class="p-6">
-                        <div v-for="(perms, group) in permissionGroups" :key="group" class="mb-8 last:mb-0">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold text-gray-800 capitalize flex items-center">
-                                    <i class="fas fa-shield-alt mr-2 text-blue-600"></i>
-                                    {{ group }}
-                                </h3>
-                                <div class="space-x-2">
-                                    <button 
-                                        @click="selectAll(perms)"
-                                        class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200"
-                                    >
-                                        Select All
-                                    </button>
-                                    <button 
-                                        @click="deselectAll(perms)"
-                                        class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
-                                    >
-                                        Deselect All
-                                    </button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div 
+                                v-for="permission in permissions" 
+                                :key="permission.id" 
+                                class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                            >
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">{{ permission.display_name || permission.name }}</h3>
+                                        <p class="text-xs text-gray-500">{{ permission.name }}</p>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button 
+                                            @click="editPermission(permission)" 
+                                            class="text-blue-600 hover:text-blue-900"
+                                        >
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button 
+                                            @click="deletePermission(permission)" 
+                                            class="text-red-600 hover:text-red-900"
+                                        >
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                <label 
-                                    v-for="perm in perms" 
-                                    :key="perm"
-                                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        :value="perm"
-                                        v-model="form.permissions"
-                                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    <span class="ml-3 text-sm text-gray-700">{{ perm }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Selected Permissions Info -->
-                <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div class="flex items-start">
-                        <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
-                        <div>
-                            <h4 class="font-semibold text-blue-800 text-sm">Selected Permissions</h4>
-                            <p class="text-blue-700 text-xs mt-1">
-                                Total {{ form.permissions.length }} permissions selected. 
-                                Gunakan checkbox di atas untuk memilih permissions untuk role baru atau existing.
-                            </p>
-                            <div class="flex flex-wrap gap-2 mt-3">
-                                <span 
-                                    v-for="perm in form.permissions" 
-                                    :key="perm"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                                >
-                                    {{ perm }}
-                                    <button @click="togglePermission(perm)" class="ml-1 hover:text-blue-600">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </span>
+                                <p v-if="permission.description" class="text-sm text-gray-600 mt-2">
+                                    {{ permission.description }}
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Permission Modal -->
+        <Modal :show="showPermissionModal" @close="showPermissionModal = false" max-width="lg">
+            <form @submit.prevent="submit" class="p-6 space-y-4">
+                <h2 class="text-xl font-bold">{{ editingPermission ? 'Edit' : 'Tambah' }} Permission</h2>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nama Permission</label>
+                    <input 
+                        v-model="form.name" 
+                        type="text" 
+                        required 
+                        placeholder="contoh: transactions.create"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <InputError :message="form.errors.name" class="mt-2" />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Display Name</label>
+                    <input 
+                        v-model="form.display_name" 
+                        type="text" 
+                        placeholder="contoh: Buat Transaksi"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <InputError :message="form.errors.display_name" class="mt-2" />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                    <textarea 
+                        v-model="form.description" 
+                        rows="3" 
+                        placeholder="Deskripsi permission..."
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    ></textarea>
+                    <InputError :message="form.errors.description" class="mt-2" />
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" @click="showPermissionModal = false" class="btn-secondary">Batal</button>
+                    <button type="submit" class="btn-primary" :disabled="form.processing">
+                        {{ editingPermission ? 'Update' : 'Simpan' }}
+                    </button>
+                </div>
+            </form>
+        </Modal>
     </AdminLayout>
 </template>

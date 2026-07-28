@@ -23,9 +23,21 @@ class RoleManagementController extends Controller
             'roles' => Role::with('permissions')->get()->map(fn($role) => [
                 'id' => $role->id,
                 'name' => $role->name,
+                'display_name' => $role->display_name ?? $role->name,
+                'description' => $role->description ?? null,
                 'permissions_count' => $role->permissions->count(),
-                'permissions' => $role->permissions->pluck('name'),
+                'permissions' => $role->permissions->map(fn($p) => [
+                    'id' => $p->id,
+                    'name' => $p->name,
+                    'display_name' => $p->display_name ?? $p->name,
+                ]),
                 'users_count' => $role->users()->count(),
+            ]),
+            'permissions' => Permission::all()->map(fn($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'display_name' => $p->display_name ?? $p->name,
+                'description' => $p->description ?? null,
             ]),
         ]);
     }
@@ -34,12 +46,20 @@ class RoleManagementController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|unique:roles,name',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,name',
+            'display_name' => 'nullable|string',
+            'description' => 'nullable|string',
         ]);
 
         $role = Role::create(['name' => $validated['name']]);
-        $role->syncPermissions($validated['permissions']);
+        
+        // Update display_name and description if provided
+        if (isset($validated['display_name'])) {
+            $role->display_name = $validated['display_name'];
+        }
+        if (isset($validated['description'])) {
+            $role->description = $validated['description'];
+        }
+        $role->save();
 
         return back()->with('success', 'Role berhasil ditambahkan.');
     }
@@ -53,12 +73,19 @@ class RoleManagementController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|unique:roles,name,' . $role->id,
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,name',
+            'display_name' => 'nullable|string',
+            'description' => 'nullable|string',
         ]);
 
         $role->update(['name' => $validated['name']]);
-        $role->syncPermissions($validated['permissions']);
+        
+        if (isset($validated['display_name'])) {
+            $role->display_name = $validated['display_name'];
+        }
+        if (isset($validated['description'])) {
+            $role->description = $validated['description'];
+        }
+        $role->save();
 
         return back()->with('success', 'Role berhasil diperbarui.');
     }
@@ -77,12 +104,89 @@ class RoleManagementController extends Controller
         return back()->with('success', 'Role berhasil dihapus.');
     }
 
+    public function cloneRole(Role $role)
+    {
+        $newRole = Role::create(['name' => $role->name . ' (Copy)']);
+        $newRole->syncPermissions($role->permissions);
+        
+        return back()->with('success', 'Role berhasil di-clone.');
+    }
+
+    public function addPermission(Request $request, Role $role)
+    {
+        $validated = $request->validate([
+            'permission_id' => 'required|exists:permissions,id',
+        ]);
+
+        $permission = Permission::findOrFail($validated['permission_id']);
+        $role->givePermissionTo($permission);
+
+        return back()->with('success', 'Permission berhasil ditambahkan.');
+    }
+
+    public function removePermission(Role $role, Permission $permission)
+    {
+        $role->revokePermissionTo($permission);
+
+        return back()->with('success', 'Permission berhasil dihapus.');
+    }
+
     public function permissions()
     {
         return Inertia::render('Settings/Permissions', [
-            'permissions' => Permission::all()->groupBy(function($permission) {
-                return explode('-', $permission->name)[0] ?? 'general';
-            })->map(fn($perms) => $perms->pluck('name')),
+            'permissions' => Permission::all()->map(fn($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'display_name' => $p->display_name ?? $p->name,
+                'description' => $p->description ?? null,
+            ]),
         ]);
+    }
+
+    public function storePermission(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|unique:permissions,name',
+            'display_name' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        $permission = Permission::create(['name' => $validated['name']]);
+        
+        if (isset($validated['display_name'])) {
+            $permission->display_name = $validated['display_name'];
+        }
+        if (isset($validated['description'])) {
+            $permission->description = $validated['description'];
+        }
+        $permission->save();
+
+        return back()->with('success', 'Permission berhasil ditambahkan.');
+    }
+
+    public function updatePermission(Request $request, Permission $permission)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|unique:permissions,name,' . $permission->id,
+            'display_name' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        $permission->update(['name' => $validated['name']]);
+        
+        if (isset($validated['display_name'])) {
+            $permission->display_name = $validated['display_name'];
+        }
+        if (isset($validated['description'])) {
+            $permission->description = $validated['description'];
+        }
+
+        return back()->with('success', 'Permission berhasil diperbarui.');
+    }
+
+    public function destroyPermission(Permission $permission)
+    {
+        $permission->delete();
+        return back()->with('success', 'Permission berhasil dihapus.');
     }
 }

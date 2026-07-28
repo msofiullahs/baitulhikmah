@@ -34,8 +34,8 @@ const navigation = computed(() => {
   ];
 
   // Tambahkan menu User Management untuk Ketua & Super Admin
-  if (isKetua.value) {
-    menus.push({ name: 'Pengguna', href: 'users.index', icon: UserGroupIcon, roles: ['Ketua'] });
+  if (isKetua.value || isSuperAdmin.value) {
+    menus.push({ name: 'Pengguna', href: 'users.index', icon: UserGroupIcon, roles: ['Ketua', 'Super Admin'] });
   }
 
   // Tambahkan menu System untuk Super Admin
