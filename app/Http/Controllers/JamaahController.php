@@ -29,9 +29,20 @@ class JamaahController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'no_hp' => 'nullable|string|max:20',
-            'alamat' => 'nullable|string',
+            'nik' => 'nullable|string|max:20',
             'jenis_kelamin' => 'required|in:L,P',
+            'tanggal_lahir' => 'nullable|date',
+            'alamat' => 'nullable|string',
+            'rt' => 'nullable|string|max:10',
+            'rw' => 'nullable|string|max:10',
+            'kelurahan' => 'nullable|string|max:100',
+            'kecamatan' => 'nullable|string|max:100',
+            'kota' => 'nullable|string|max:100',
+            'no_hp' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'pekerjaan' => 'nullable|string|max:100',
+            'status' => 'nullable|in:aktif,pindah,meninggal,nonaktif',
+            'catatan' => 'nullable|string',
             'category_ids' => 'nullable|array',
             'category_ids.*' => 'exists:category_jamaahs,id',
             'foto' => 'nullable|image|max:2048',
@@ -40,6 +51,8 @@ class JamaahController extends Controller
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('jamaah', 'public');
         }
+        
+        $validated['status'] = $validated['status'] ?? 'aktif';
         $validated['created_by'] = Auth::id();
 
         $jamaah = Jamaah::create($validated);
@@ -54,9 +67,20 @@ class JamaahController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'no_hp' => 'nullable|string|max:20',
-            'alamat' => 'nullable|string',
+            'nik' => 'nullable|string|max:20',
             'jenis_kelamin' => 'required|in:L,P',
+            'tanggal_lahir' => 'nullable|date',
+            'alamat' => 'nullable|string',
+            'rt' => 'nullable|string|max:10',
+            'rw' => 'nullable|string|max:10',
+            'kelurahan' => 'nullable|string|max:100',
+            'kecamatan' => 'nullable|string|max:100',
+            'kota' => 'nullable|string|max:100',
+            'no_hp' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'pekerjaan' => 'nullable|string|max:100',
+            'status' => 'required|in:aktif,pindah,meninggal,nonaktif',
+            'catatan' => 'nullable|string',
             'category_ids' => 'nullable|array',
             'foto' => 'nullable|image|max:2048',
         ]);
