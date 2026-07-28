@@ -8,13 +8,13 @@ use Inertia\Inertia;
 
 class SettingsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:manage-settings');
-    }
-
     public function index()
     {
+        // Check permission inline
+        if (!auth()->user()->can('manage-settings')) {
+            abort(403);
+        }
+        
         $settings = Setting::all()->groupBy('group');
         
         return Inertia::render('Settings/Index', [
