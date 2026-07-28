@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\{BelongsToMany, HasMany};
 
 class Student extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
     protected $fillable = [
         'nis', 'nama', 'jenis_kelamin', 'tanggal_lahir', 'nama_ortu', 
@@ -24,7 +24,7 @@ class Student extends Model
 
     public function presences(): HasMany
     {
-        return $this->hasMany(StudentPrecense::class); // *Sesuai nama migration
+        return $this->hasMany(StudentPresence::class); // *Sesuai nama migration
     }
 
     public function payments(): HasMany

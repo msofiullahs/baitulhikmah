@@ -13,7 +13,7 @@ class JumahController extends Controller
         return Inertia::render('Jumah/Index', [
             'schedules' => JumahSchedule::with(['khatib', 'imam', 'muadzin'])
                 ->orderBy('tanggal_jumat', 'desc')->paginate(15),
-            'khatibs' => Khatib::where('is_active', true)->get(['id', 'nama', 'gelar']),
+            'khatibs' => Khatib::where('is_active', true)->get(['id', 'nama']),
         ]);
     }
 

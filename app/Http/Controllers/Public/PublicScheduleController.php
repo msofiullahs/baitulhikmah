@@ -97,11 +97,11 @@ class PublicScheduleController extends Controller
                 'tema' => $s->tema,
                 'judul_khutbah' => $s->judul_khutbah,
                 'khatib' => $s->khatib ? [
-                    'nama' => trim($s->khatib->gelar . ' ' . $s->khatib->nama),
+                    'nama' => $s->khatib->nama,
                     'spesialisasi' => $s->khatib->spesialisasi,
                 ] : null,
-                'imam' => $s->imam ? trim($s->imam->gelar . ' ' . $s->imam->nama) : null,
-                'muadzin' => $s->muadzin ? trim($s->muadzin->gelar . ' ' . $s->muadzin->nama) : null,
+                'imam' => $s->imam ? $s->imam->nama : null,
+                'muadzin' => $s->muadzin ? $s->muadzin->nama : null,
             ]),
         ]);
     }
