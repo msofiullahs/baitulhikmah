@@ -11,6 +11,7 @@ class JumahController extends Controller
     public function index()
     {
         return Inertia::render('Jumah/Index', [
+            'items' => Khatib::orderBy('nama')->paginate(15),
             'schedules' => JumahSchedule::with(['khatib', 'imam', 'muadzin'])
                 ->orderBy('tanggal_jumat', 'desc')->paginate(15),
             'khatibs' => Khatib::where('is_active', true)->get(['id', 'nama']),
@@ -28,6 +29,25 @@ class JumahController extends Controller
         ]);
         Khatib::create($validated);
         return back()->with('success', 'Data khatib berhasil ditambahkan.');
+    }
+
+    public function updateKhatib(Request $request, Khatib $khatib)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'gelar' => 'nullable|string|max:50',
+            'no_hp' => 'nullable|string|max:20',
+            'spesialisasi' => 'nullable|string',
+            'tipe' => 'required|in:internal,tamu',
+        ]);
+        $khatib->update($validated);
+        return back()->with('success', 'Data khatib berhasil diperbarui.');
+    }
+
+    public function destroyKhatib(Khatib $khatib)
+    {
+        $khatib->delete();
+        return back()->with('success', 'Data khatib berhasil dihapus.');
     }
 
     public function storeSchedule(Request $request)

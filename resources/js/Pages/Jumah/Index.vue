@@ -14,21 +14,34 @@ const props = defineProps({
 
 const search = ref(props.filters?.search || '');
 const modalOpen = ref(false);
+const editingItem = ref(null);
 
 const form = useForm({
   // Sesuaikan field
   nama: '',
 });
 
+const openEdit = (item) => {
+  editingItem.value = item;
+  form.nama = item.nama;
+  modalOpen.value = true;
+};
+
 const submit = () => {
-  form.post(route('[module].store'), {
-    onSuccess: () => { modalOpen.value = false; form.reset(); },
-  });
+  if (editingItem.value) {
+    form.put(route('jumah.khatib.update', editingItem.value.id), {
+      onSuccess: () => { modalOpen.value = false; form.reset(); editingItem.value = null; },
+    });
+  } else {
+    form.post(route('jumah.khatib.store'), {
+      onSuccess: () => { modalOpen.value = false; form.reset(); },
+    });
+  }
 };
 
 const deleteItem = (item) => {
   if (confirm(`Hapus ${item.nama}?`)) {
-    router.delete(route('[module].destroy', item.id));
+    router.delete(route('jumah.khatib.destroy', item.id));
   }
 };
 </script>
@@ -70,7 +83,7 @@ const deleteItem = (item) => {
           <tr v-for="item in items.data" :key="item.id" class="hover:bg-gray-50">
             <td class="px-6 py-4">{{ item.nama }}</td>
             <td class="px-6 py-4 text-center">
-              <button @click="/* openEdit placeholder */" class="text-gray-400 hover:text-primary mx-1"><PencilIcon class="w-5 h-5 inline" /></button>
+              <button @click="openEdit(item)" class="text-gray-400 hover:text-primary mx-1"><PencilIcon class="w-5 h-5 inline" /></button>
               <button @click="deleteItem(item)" class="text-gray-400 hover:text-red-600 mx-1"><TrashIcon class="w-5 h-5 inline" /></button>
             </td>
           </tr>

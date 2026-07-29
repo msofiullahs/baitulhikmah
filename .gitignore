@@ -1,32 +1,22 @@
-```
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-dist/
-build/
-*.class
-*.exe
-*.dll
-*.so
-*.a
-*.out
-
 # Dependencies
 node_modules/
 vendor/
-composer.lock
-*.lock
+
+# Build artifacts
+public/build/
+public/mix-manifest.json
+bootstrap/cache/
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+storage/app/public/
+
+# Environment
 .env
 .env.local
 .env.*
-
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-*.swo
+!.env.example
 
 # Editors
 .vscode/
@@ -34,33 +24,55 @@ composer.lock
 *.swp
 *.swo
 
-# OS generated files
+# OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+
+# Compiled files
+*.pyc
+__pycache__/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.out
 
 # Coverage
 coverage/
 htmlcov/
 .coverage
 
-# Python specific
-.mypy_cache/
-.pytest_cache/
-*.pyc
-__pycache__/
+# Package managers
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.bzl
+.pnp.js
 
-# PHP specific
-vendor/
-composer.lock
-*.phar
+# Testing
+.phpunit.result.cache
+.phpunit-watcher.yml
+mocha.opts
+jasmine.json
 
-# Build directories
-target/
-.gradle/
-build/
-dist/
+# Laravel specific
+public/hot
+npm-debug.log*
+yarn-error.log*
+yarn.lock
+package-lock.json
 
-# Compression files
+# Temp files
+*.tmp
+*.temp
+*.cache
+
+# Compressed files
 *.zip
 *.gz
 *.tar
@@ -79,4 +91,28 @@ dist/
 *.Z
 *.lz
 *.lzo
-```
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# PyTest
+.pytest_cache/
+
+# Gradle
+.gradle/
+build/
+
+# Target
+target/
+
+# Julia
+julia-*/
+
+# Zig
+zig*/
