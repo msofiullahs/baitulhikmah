@@ -22,6 +22,8 @@ use App\Http\Controllers\Public\PublicContactController;
 use App\Http\Controllers\RoleManagementController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Reports\ReportController;
+use App\Http\Controllers\AssetCategoryController;
+use App\Http\Controllers\ZiswafCategoryController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -95,10 +97,21 @@ Route::middleware([
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
         Route::get('/settings/general', [SettingsController::class, 'general'])->name('settings.general');
+        Route::post('/settings/general', [SettingsController::class, 'updateGeneral'])->name('settings.general.update');
         Route::get('/settings/finance', [SettingsController::class, 'finance'])->name('settings.finance');
+        Route::post('/settings/finance/kasbox', [SettingsController::class, 'saveKasBox'])->name('settings.finance.kasbox');
+        Route::post('/settings/finance/approval', [SettingsController::class, 'saveApproval'])->name('settings.finance.approval');
+        Route::post('/settings/finance/payment', [SettingsController::class, 'savePayment'])->name('settings.finance.payment');
+        Route::post('/settings/finance/whatsapp', [SettingsController::class, 'saveWhatsApp'])->name('settings.finance.whatsapp');
         Route::get('/settings/masjid', [SettingsController::class, 'masjid'])->name('settings.masjid');
         Route::get('/settings/social', [SettingsController::class, 'social'])->name('settings.social');
     });
+
+    // Asset Category CRUD
+    Route::resource('asset-categories', App\Http\Controllers\AssetCategoryController::class);
+    
+    // Ziswaf Category CRUD
+    Route::resource('ziswaf-categories', App\Http\Controllers\ZiswafCategoryController::class);
 
     Route::middleware(['can:manage-roles'])->group(function () {
         Route::get('/roles', [RoleManagementController::class, 'roles'])->name('roles.index');
