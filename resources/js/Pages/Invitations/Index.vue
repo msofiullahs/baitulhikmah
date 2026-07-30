@@ -313,15 +313,32 @@ const resetForm = () => {
 };
 
 const submitForm = () => {
+    // Parse receiver_names menjadi array of objects
+    let receiversArray = [];
+    if (form.value.receiver_names) {
+        const names = form.value.receiver_names.split('\n').filter(n => n.trim());
+        receiversArray = names.map(name => ({
+            nama: name.trim(),
+            jamaah_id: null,
+            no_hp: null,
+            email: null,
+        }));
+    }
+    
+    const formData = {
+        ...form.value,
+        receiver_names: JSON.stringify(receiversArray),
+    };
+
     if (isEditing.value) {
-        router.put(route('invitations.update', editingId.value), form.value, {
+        router.put(route('invitations.update', editingId.value), formData, {
             onSuccess: () => {
                 showModal.value = false;
                 resetForm();
             },
         });
     } else {
-        router.post(route('invitations.store'), form.value, {
+        router.post(route('invitations.store'), formData, {
             onSuccess: () => {
                 showModal.value = false;
                 resetForm();

@@ -9,7 +9,7 @@ class Invitation extends Model
 {
     protected $fillable = [
         'no_undangan', 'template_id', 'judul_acara', 'deskripsi', 'tanggal_acara',
-        'lokasi', 'pembicara', 'pakaian', 'kontak', 'status', 'created_by'
+        'lokasi', 'pembicara', 'pakaian', 'dress_code', 'kontak', 'status', 'created_by'
     ];
 
     protected $casts = ['tanggal_acara' => 'datetime'];

@@ -1,37 +1,47 @@
 ```
-# Dependencies
-node_modules/
+# Dependency directories
 vendor/
+node_modules/
 
 # Build artifacts
 public/build/
-public/css/
-public/js/
 bootstrap/cache/
 storage/logs/
 storage/framework/cache/
 storage/framework/sessions/
 storage/framework/views/
 
-# Environment
+# Environment specific
 .env
 .env.local
 .env.*
 !.env.example
 
-# Editors
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
 
 # Logs
 *.log
 
+# Compiled files
+*.php~
+*.vue~
+
+# Coverage reports
+coverage/
+*.gcov
+*.lcov
+*.profdata
+*.coverage
+
 # Temporary files
 *.tmp
+*.temp
 ```
