@@ -24,6 +24,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\AssetCategoryController;
 use App\Http\Controllers\ZiswafCategoryController;
+use App\Http\Controllers\TransactionCategoryController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -112,6 +113,9 @@ Route::middleware([
     
     // Ziswaf Category CRUD
     Route::resource('ziswaf-categories', App\Http\Controllers\ZiswafCategoryController::class);
+    
+    // Transaction Category CRUD
+    Route::resource('transaction-categories', TransactionCategoryController::class);
 
     Route::middleware(['can:manage-roles'])->group(function () {
         Route::get('/roles', [RoleManagementController::class, 'roles'])->name('roles.index');

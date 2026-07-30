@@ -115,14 +115,9 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Template</label>
-                            <select v-model="form.template" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <select v-model="form.template_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 <option value="">Pilih Template</option>
-                                <option value="Pengajian Rutin">Pengajian Rutin</option>
-                                <option value="Maulid/Isra Mi'raj">Maulid/Isra Mi'raj</option>
-                                <option value="Rapat Ta'mir">Rapat Ta'mir</option>
-                                <option value="Halal Bihalal">Halal Bihalal</option>
-                                <option value="Kajian Akbar">Kajian Akbar</option>
-                                <option value="Pernikahan">Pernikahan</option>
+                                <option v-for="tpl in templates" :key="tpl.id" :value="tpl.id">{{ tpl.nama }}</option>
                             </select>
                         </div>
                         <div>
@@ -171,7 +166,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Daftar Penerima (satu nama per baris)</label>
-                        <textarea v-model="form.daftar_penerima" rows="6" placeholder="Ahmad&#10;Fatimah&#10;Ibrahim&#10;Khadijah" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                        <textarea v-model="form.receiver_names" rows="6" placeholder="Ahmad&#10;Fatimah&#10;Ibrahim&#10;Khadijah" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                         <p class="text-xs text-gray-500 mt-1">Import dari Excel dapat dilakukan setelah undangan dibuat</p>
                     </div>
 
@@ -232,6 +227,7 @@ import Modal from '@/Components/Modal.vue';
 const props = defineProps({
     invitations: Object,
     masjid: Object,
+    templates: Array,
 });
 
 const showModal = ref(false);
@@ -245,7 +241,7 @@ const previewData = ref({});
 
 const form = ref({
     no_undangan: '',
-    template: '',
+    template_id: '',
     judul_acara: '',
     deskripsi: '',
     tanggal_acara: '',
@@ -253,7 +249,7 @@ const form = ref({
     pembicara: '',
     dress_code: '',
     kontak: '',
-    daftar_penerima: '',
+    receiver_names: '',
 });
 
 const filteredInvitations = computed(() => {
@@ -302,7 +298,7 @@ const formatDate = (date) => {
 const resetForm = () => {
     form.value = {
         no_undangan: 'UND-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-',
-        template: '',
+        template_id: '',
         judul_acara: '',
         deskripsi: '',
         tanggal_acara: '',
@@ -310,7 +306,7 @@ const resetForm = () => {
         pembicara: '',
         dress_code: '',
         kontak: '',
-        daftar_penerima: '',
+        receiver_names: '',
     };
     isEditing.value = false;
     editingId.value = null;
@@ -342,7 +338,7 @@ const previewInvitation = (inv) => {
 const editInvitation = (inv) => {
     form.value = {
         no_undangan: inv.no_undangan,
-        template: inv.template,
+        template_id: inv.template_id || '',
         judul_acara: inv.judul_acara,
         deskripsi: inv.deskripsi || '',
         tanggal_acara: inv.tanggal_acara ? inv.tanggal_acara.slice(0, 16) : '',
@@ -350,7 +346,7 @@ const editInvitation = (inv) => {
         pembicara: inv.pembicara || '',
         dress_code: inv.dress_code || '',
         kontak: inv.kontak || '',
-        daftar_penerima: '',
+        receiver_names: '',
     };
     isEditing.value = true;
     editingId.value = inv.id;

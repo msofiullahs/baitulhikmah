@@ -80,12 +80,13 @@ const resetFilter = () => {
       </div>
 
       <!-- 3. Content Grid (Card Layout) -->
-      <div v-if="items.data.length > 0" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <div v-for="item in items.data" :key="item.id" class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col">
+      <div v-if="items && items.data" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <template v-if="items.data.length > 0">
+          <div v-for="item in items.data" :key="item.id" class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col">
           
           <!-- Gambar/Poster (Opsional) -->
-          <div v-if="item.poster || item.gambar" class="h-48 bg-gray-200 overflow-hidden">
-            <img :src="item.poster || item.gambar" :alt="item.nama || item.judul" class="w-full h-full object-cover">
+          <div v-if="item.gambar" class="h-48 bg-gray-200 overflow-hidden">
+            <img :src="item.gambar" :alt="item.judul" class="w-full h-full object-cover">
           </div>
           <div v-else class="h-48 bg-gradient-to-br from-primary/10 to-primary-light/10 flex items-center justify-center text-primary text-4xl">
             
@@ -94,24 +95,18 @@ const resetFilter = () => {
           <!-- Konten Card -->
           <div class="p-6 flex-1 flex flex-col">
             <!-- Badge Kategori -->
-            <span v-if="item.kategori" class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full mb-3 w-fit uppercase tracking-wide">
-              {{ item.kategori }}
+            <span v-if="item.tipe" class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full mb-3 w-fit uppercase tracking-wide">
+              {{ item.tipe }}
             </span>
 
-            <h3 class="font-bold text-xl text-gray-800 mb-2 line-clamp-2">{{ item.judul || item.nama }}</h3>
+            <h3 class="font-bold text-xl text-gray-800 mb-2 line-clamp-2">{{ item.judul }}</h3>
             
-            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">{{ item.deskripsi || item.isi }}</p>
+            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">{{ item.isi }}</p>
 
             <!-- Meta Info (Tanggal, Lokasi, dll) -->
             <div class="space-y-2 text-sm text-gray-500 border-t pt-4 mt-auto">
-              <p v-if="item.tanggal" class="flex items-center gap-2">
-                <CalendarIcon class="w-4 h-4 text-primary" /> {{ item.tanggal }}
-              </p>
-              <p v-if="item.waktu" class="flex items-center gap-2">
-                <ClockIcon class="w-4 h-4 text-primary" /> {{ item.waktu }}
-              </p>
-              <p v-if="item.lokasi" class="flex items-center gap-2">
-                <MapPinIcon class="w-4 h-4 text-primary" /> {{ item.lokasi }}
+              <p v-if="item.published_at" class="flex items-center gap-2">
+                <CalendarIcon class="w-4 h-4 text-primary" /> {{ item.published_at }}
               </p>
             </div>
           </div>
@@ -127,17 +122,19 @@ const resetFilter = () => {
             </Link>
           </div>
         </div>
-      </div>
-
-      <!-- Empty State -->
-      <div v-else class="text-center py-20 bg-white rounded-xl shadow-sm">
-        <div class="text-6xl mb-4"></div>
-        <h3 class="text-xl font-bold text-gray-700">Tidak ada data ditemukan</h3>
-        <p class="text-gray-500 mt-2">Coba ubah kata kunci pencarian atau filter Anda.</p>
+        </template>
+        <template v-else>
+          <!-- Empty State -->
+          <div class="col-span-full text-center py-20 bg-white rounded-xl shadow-sm">
+            <div class="text-6xl mb-4"></div>
+            <h3 class="text-xl font-bold text-gray-700">Tidak ada data ditemukan</h3>
+            <p class="text-gray-500 mt-2">Coba ubah kata kunci pencarian atau filter Anda.</p>
+          </div>
+        </template>
       </div>
 
       <!-- 4. Pagination -->
-      <div v-if="items.data.length > 0" class="mb-16">
+      <div v-if="items && items.data && items.data.length > 0" class="mb-16">
         <Pagination :links="items.links" />
       </div>
 
