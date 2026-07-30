@@ -27,11 +27,11 @@ const openEdit = (item) => {
 
 const submit = () => {
   if (editingItem.value) {
-    form.put(route('transaction-category.update', editingItem.value.id), {
+    form.put(route('transaction-categories.update', editingItem.value.id), {
       onSuccess: () => { modalOpen.value = false; form.reset(); editingItem.value = null; },
     });
   } else {
-    form.post(route('transaction-category.store'), {
+    form.post(route('transaction-categories.store'), {
       onSuccess: () => { modalOpen.value = false; form.reset(); },
     });
   }
@@ -39,7 +39,7 @@ const submit = () => {
 
 const deleteItem = (item) => {
   if (confirm(`Hapus ${item.nama}?`)) {
-    router.delete(route('transaction-category.destroy', item.id));
+    router.delete(route('transaction-categories.destroy', item.id));
   }
 };
 </script>
@@ -53,8 +53,8 @@ const deleteItem = (item) => {
     </div>
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
       <div class="flex gap-3">
-        <div class="flex-1 relative"><MagnifyingGlassIcon class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" /><input v-model="search" @keyup.enter="router.get(route('transaction-category.index'), { search, tipe: selectedTipe }, { preserveState: true })" type="text" placeholder="Cari..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"></div>
-        <select v-model="selectedTipe" @change="router.get(route('transaction-category.index'), { search, tipe: selectedTipe }, { preserveState: true })" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"><option value="">Semua Tipe</option><option value="pemasukan">Pemasukan</option><option value="pengeluaran">Pengeluaran</option></select>
+        <div class="flex-1 relative"><MagnifyingGlassIcon class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" /><input v-model="search" @keyup.enter="router.get(route('transaction-categories.index'), { search, tipe: selectedTipe }, { preserveState: true })" type="text" placeholder="Cari..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"></div>
+        <select v-model="selectedTipe" @change="router.get(route('transaction-categories.index'), { search, tipe: selectedTipe }, { preserveState: true })" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"><option value="">Semua Tipe</option><option value="pemasukan">Pemasukan</option><option value="pengeluaran">Pengeluaran</option></select>
       </div>
     </div>
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">

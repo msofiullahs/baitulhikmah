@@ -21,8 +21,10 @@ const isSuperAdmin = computed(() => userRole.value === 'Super Admin');
 const allMenus = [
   { name: 'Dashboard', href: 'dashboard', icon: HomeIcon, roles: ['all'] },
   { name: 'Arus Kas', href: 'transactions.index', icon: CurrencyDollarIcon, roles: ['Ketua', 'Wakil Ketua', 'Bendahara', 'Sie Sarana Prasarana'] },
+  { name: 'Kas Box', href: 'cashboxes.index', icon: CubeTransparentIcon, roles: ['Ketua', 'Wakil Ketua', 'Bendahara', 'Sie Sarana Prasarana'] },
   { name: 'Inventaris', href: 'assets.index', icon: CubeTransparentIcon, roles: ['Ketua', 'Wakil Ketua', 'Bendahara', 'Sie Sarana Prasarana', 'Sie Kebersihan'] },
   { name: 'Undangan', href: 'invitations.index', icon: EnvelopeIcon, roles: ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Sie Peribadatan & Dakwah', 'Sie Humas & Kemasyarakatan', 'Sie Kemudaan dan Remaja Masjid', 'Sie Pemberdayaan Perempuan'] },
+  { name: 'Template Undangan', href: 'invitation-templates.index', icon: DocumentChartBarIcon, roles: ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Sie Peribadatan & Dakwah', 'Sie Humas & Kemasyarakatan', 'Sie Kemudaan dan Remaja Masjid', 'Sie Pemberdayaan Perempuan'] },
   { name: 'Kegiatan', href: 'activities.index', icon: CalendarIcon, roles: ['all'] },
   { name: 'Jamaah', href: 'jamaah.index', icon: UsersIcon, roles: ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Sie Humas & Kemasyarakatan', 'Sie Kemudaan dan Remaja Masjid', 'Sie Pemberdayaan Perempuan'] },
   { name: 'TPQ', href: 'tpq.students.index', icon: BookOpenIcon, roles: ['Ketua', 'Wakil Ketua', 'Sie Pendidikan'] },
