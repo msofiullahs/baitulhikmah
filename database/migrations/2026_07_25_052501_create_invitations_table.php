@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('lokasi');
             $table->text('pembicara')->nullable();
             $table->string('pakaian')->nullable(); // Dress code
+            $table->string('dress_code')->nullable(); // Alias untuk pakaian
             $table->string('kontak')->nullable();
             $table->enum('status', ['draft', 'terkirim', 'selesai'])->default('draft');
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();

@@ -35,11 +35,11 @@ const openEdit = (item) => {
 
 const submit = () => {
   if (editingItem.value) {
-    form.put(route('cashbox.update', editingItem.value.id), {
+    form.put(route('cashboxes.update', editingItem.value.id), {
       onSuccess: () => { modalOpen.value = false; form.reset(); editingItem.value = null; },
     });
   } else {
-    form.post(route('cashbox.store'), {
+    form.post(route('cashboxes.store'), {
       onSuccess: () => { modalOpen.value = false; form.reset(); },
     });
   }
@@ -47,7 +47,7 @@ const submit = () => {
 
 const deleteItem = (item) => {
   if (confirm(`Hapus ${item.nama}?`)) {
-    router.delete(route('cashbox.destroy', item.id));
+    router.delete(route('cashboxes.destroy', item.id));
   }
 };
 
@@ -76,7 +76,7 @@ const resetForm = () => {
       <div class="flex gap-3">
         <div class="flex-1 relative">
           <MagnifyingGlassIcon class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" />
-          <input v-model="search" @keyup.enter="router.get(route('cashbox.index'), { search }, { preserveState: true })" type="text" placeholder="Cari..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+          <input v-model="search" @keyup.enter="router.get(route('cashboxes.index'), { search }, { preserveState: true })" type="text" placeholder="Cari..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
         </div>
       </div>
     </div>

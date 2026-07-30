@@ -9,6 +9,7 @@ use App\Http\Controllers\JamaahController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\InvitationTemplateController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\JumahController;
 use App\Http\Controllers\TpqController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\AssetCategoryController;
 use App\Http\Controllers\ZiswafCategoryController;
 use App\Http\Controllers\TransactionCategoryController;
+use App\Http\Controllers\CashboxController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -68,7 +70,11 @@ Route::middleware([
     
     // Undangan dengan route custom untuk generate PDF
     Route::resource('invitations', InvitationController::class);
-    Route::post('invitations/{invitation}/generate', [InvitationController::class, 'generatePdf'])->name('invitations.generate');
+    Route::get('invitations/{invitation}/pdf', [InvitationController::class, 'generatePdf'])->name('invitations.pdf');
+    
+    // Template Undangan
+    Route::resource('invitation-templates', InvitationTemplateController::class)->except(['show']);
+    Route::post('invitation-templates/{invitationTemplate}/toggle-active', [InvitationTemplateController::class, 'toggleActive'])->name('invitation-templates.toggle-active');
 
     // Jumah (Khatib & Jadwal)
     Route::get('jumah', [JumahController::class, 'index'])->name('jumah.index');
@@ -116,6 +122,9 @@ Route::middleware([
     
     // Transaction Category CRUD
     Route::resource('transaction-categories', TransactionCategoryController::class);
+
+    // Cashbox CRUD
+    Route::resource('cashboxes', CashboxController::class);
 
     Route::middleware(['can:manage-roles'])->group(function () {
         Route::get('/roles', [RoleManagementController::class, 'roles'])->name('roles.index');

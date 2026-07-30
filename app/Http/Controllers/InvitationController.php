@@ -39,45 +39,101 @@ class InvitationController extends Controller
     {
         $validated = $request->validate([
             'template_id' => 'required|exists:undangan_templates,id',
+            'no_undangan' => 'nullable|string|max:100',
             'judul_acara' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'tanggal_acara' => 'required|date',
             'lokasi' => 'required|string|max:255',
             'pembicara' => 'nullable|string|max:255',
-            'pakaian' => 'nullable|string|max:255',
+            'dress_code' => 'nullable|string|max:255',
             'kontak' => 'nullable|string|max:255',
-            'receiver_names' => 'required|string', // JSON string dari Vue (daftar nama/HP)
+            'receiver_names' => 'nullable|string', // JSON string dari Vue (daftar nama/HP)
         ]);
 
         $invitation = Invitation::create([
-            'no_undangan' => 'UND-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4)),
+            'no_undangan' => $validated['no_undangan'] ?? 'UND-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4)),
             'template_id' => $validated['template_id'],
             'judul_acara' => $validated['judul_acara'],
-            'deskripsi' => $validated['deskripsi'],
+            'deskripsi' => $validated['deskripsi'] ?? null,
             'tanggal_acara' => $validated['tanggal_acara'],
             'lokasi' => $validated['lokasi'],
-            'pembicara' => $validated['pembicara'],
-            'pakaian' => $validated['pakaian'],
-            'kontak' => $validated['kontak'],
+            'pembicara' => $validated['pembicara'] ?? null,
+            'pakaian' => $validated['dress_code'] ?? null,
+            'kontak' => $validated['kontak'] ?? null,
             'status' => 'draft',
             'created_by' => Auth::id(),
         ]);
 
         // Parse receiver_names (format JSON dari frontend)
-        $receiversData = json_decode($validated['receiver_names'], true);
-        
-        foreach ($receiversData as $receiver) {
-            InvitationReceiver::create([
-                'invitation_id' => $invitation->id,
-                'jamaah_id' => $receiver['jamaah_id'] ?? null,
-                'nama_penerima' => $receiver['nama'],
-                'no_hp' => $receiver['no_hp'] ?? null,
-                'email' => $receiver['email'] ?? null,
-                'konfirmasi' => 'belum',
-            ]);
+        if (!empty($validated['receiver_names'])) {
+            $receiversData = json_decode($validated['receiver_names'], true);
+            
+            if (is_array($receiversData)) {
+                foreach ($receiversData as $receiver) {
+                    InvitationReceiver::create([
+                        'invitation_id' => $invitation->id,
+                        'jamaah_id' => $receiver['jamaah_id'] ?? null,
+                        'nama_penerima' => $receiver['nama'] ?? '-',
+                        'no_hp' => $receiver['no_hp'] ?? null,
+                        'email' => $receiver['email'] ?? null,
+                        'konfirmasi' => 'belum',
+                    ]);
+                }
+            }
         }
 
         return redirect()->route('invitations.index')->with('success', 'Draft undangan berhasil dibuat. Silakan generate PDF.');
+    }
+
+    public function update(Request $request, Invitation $invitation)
+    {
+        $validated = $request->validate([
+            'template_id' => 'required|exists:undangan_templates,id',
+            'no_undangan' => 'nullable|string|max:100',
+            'judul_acara' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'tanggal_acara' => 'required|date',
+            'lokasi' => 'required|string|max:255',
+            'pembicara' => 'nullable|string|max:255',
+            'dress_code' => 'nullable|string|max:255',
+            'kontak' => 'nullable|string|max:255',
+            'receiver_names' => 'nullable|string',
+        ]);
+
+        $invitation->update([
+            'no_undangan' => $validated['no_undangan'] ?? $invitation->no_undangan,
+            'template_id' => $validated['template_id'],
+            'judul_acara' => $validated['judul_acara'],
+            'deskripsi' => $validated['deskripsi'] ?? null,
+            'tanggal_acara' => $validated['tanggal_acara'],
+            'lokasi' => $validated['lokasi'],
+            'pembicara' => $validated['pembicara'] ?? null,
+            'pakaian' => $validated['dress_code'] ?? null,
+            'kontak' => $validated['kontak'] ?? null,
+        ]);
+
+        // Update receiver jika ada data baru
+        if (!empty($validated['receiver_names'])) {
+            $receiversData = json_decode($validated['receiver_names'], true);
+            
+            if (is_array($receiversData)) {
+                // Hapus receiver lama
+                $invitation->receivers()->delete();
+                
+                foreach ($receiversData as $receiver) {
+                    InvitationReceiver::create([
+                        'invitation_id' => $invitation->id,
+                        'jamaah_id' => $receiver['jamaah_id'] ?? null,
+                        'nama_penerima' => $receiver['nama'] ?? '-',
+                        'no_hp' => $receiver['no_hp'] ?? null,
+                        'email' => $receiver['email'] ?? null,
+                        'konfirmasi' => 'belum',
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('invitations.index')->with('success', 'Undangan berhasil diperbarui.');
     }
 
     /**
@@ -87,8 +143,10 @@ class InvitationController extends Controller
     {
         $receivers = $invitation->receivers;
         $template = $invitation->template;
+        $masjid = \App\Models\Masjid::first(); // Get masjid settings
+        
         $zipFileName = 'undangan_' . $invitation->no_undangan . '.zip';
-        $zipPath = storage_path('app/public/invitations/' . $zipFileName);
+        $zipPath = storage_path('app/public/invitations/' . $invitation->no_undangan . '/' . $zipFileName);
 
         // Pastikan folder ada
         if (!file_exists(dirname($zipPath))) {
@@ -106,6 +164,7 @@ class InvitationController extends Controller
                 'invitation' => $invitation,
                 'receiver' => $receiver,
                 'template' => $template,
+                'masjid' => $masjid,
             ])->setPaper('a5', 'portrait');
 
             $pdfContent = $pdf->output();
