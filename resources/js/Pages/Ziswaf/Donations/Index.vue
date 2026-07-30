@@ -94,9 +94,17 @@ const ziswafLabel = (category) => {
 
     <!-- Header -->
     <div class="mb-6 flex justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-800">Donasi ZISWAF</h1>
-        <p class="text-gray-500 text-sm">Kelola zakat, infaq, sedekah, dan wakaf</p>
+      <div class="flex items-center gap-4">
+        <Link :href="route('dashboard')" class="text-gray-500 hover:text-primary transition flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Kembali
+        </Link>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Donasi ZISWAF</h1>
+          <p class="text-gray-500 text-sm">Kelola zakat, infaq, sedekah, dan wakaf</p>
+        </div>
       </div>
       <div class="flex gap-2">
         <Link :href="route('ziswaf-categories.index')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">

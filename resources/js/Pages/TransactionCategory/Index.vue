@@ -48,7 +48,15 @@ const deleteItem = (item) => {
   <AdminLayout>
     <Head title="Kategori Transaksi" />
     <div class="mb-6 flex justify-between items-center">
-      <div><h1 class="text-2xl font-bold text-gray-800">Kategori Transaksi</h1><p class="text-gray-500 text-sm">Kategorisasi pemasukan dan pengeluaran</p></div>
+      <div class="flex items-center gap-4">
+        <Link :href="route('transactions.index')" class="text-gray-500 hover:text-primary transition flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Kembali
+        </Link>
+        <div><h1 class="text-2xl font-bold text-gray-800">Kategori Transaksi</h1><p class="text-gray-500 text-sm">Kategorisasi pemasukan dan pengeluaran</p></div>
+      </div>
       <button @click="modalOpen = true" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md"><PlusIcon class="w-5 h-5" /> Tambah</button>
     </div>
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
