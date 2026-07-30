@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { router, Link, Head, useForm } from '@inertiajs/vue3';
-import { PlusIcon, MagnifyingGlassIcon, EyeIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon, MagnifyingGlassIcon, EyeIcon, PencilIcon, TrashIcon, XMarkIcon, CogIcon } from '@heroicons/vue/24/outline';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue';
@@ -91,10 +91,16 @@ const filteredCategories = computed(() => {
         <h1 class="text-2xl font-bold text-gray-800">Manajemen Arus Kas</h1>
         <p class="text-gray-500 text-sm">Pencatatan pemasukan dan pengeluaran</p>
       </div>
-      <button @click="openCreate" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
-        <PlusIcon class="w-5 h-5" />
-        Tambah Transaksi
-      </button>
+      <div class="flex gap-2">
+        <Link :href="route('transaction-categories.index')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
+          <CogIcon class="w-5 h-5" />
+          Kelola Kategori
+        </Link>
+        <button @click="openCreate" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
+          <PlusIcon class="w-5 h-5" />
+          Tambah Transaksi
+        </button>
+      </div>
     </div>
 
     <!-- Stats -->

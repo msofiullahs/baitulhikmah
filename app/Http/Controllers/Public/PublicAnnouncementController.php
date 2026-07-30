@@ -25,15 +25,7 @@ class PublicAnnouncementController extends Controller
         $announcements = $query->orderBy('published_at', 'desc')->paginate(12);
 
         return Inertia::render('Public/Announcements/Index', [
-            'announcements' => $announcements->map(fn($a) => [
-                'id' => $a->id,
-                'judul' => $a->judul,
-                'isi' => $a->isi,
-                'tipe' => $a->tipe,
-                'gambar' => $a->gambar ? asset('storage/' . $a->gambar) : null,
-                'published_at' => $a->published_at->translatedFormat('d F Y'),
-                'is_urgent' => $a->tipe === 'urgent',
-            ]),
+            'items' => $announcements,
             'filters' => [
                 'tipe' => $request->tipe,
                 'tipe_list' => [
@@ -42,6 +34,8 @@ class PublicAnnouncementController extends Controller
                     'info_sholat' => 'Info Sholat',
                 ],
             ],
+            'hero_title' => 'Pengumuman',
+            'hero_description' => 'Informasi terbaru dari Masjid Baitul Hikmah',
         ]);
     }
 

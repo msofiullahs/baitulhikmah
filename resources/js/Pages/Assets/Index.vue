@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { router, Link, Head, useForm } from '@inertiajs/vue3';
-import { PlusIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon, QrCodeIcon, BuildingOfficeIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon, QrCodeIcon, BuildingOfficeIcon, CogIcon } from '@heroicons/vue/24/outline';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue';
@@ -113,9 +113,15 @@ const kondisiBadge = (kondisi) => {
         <h1 class="text-2xl font-bold text-gray-800">Inventaris & Aset</h1>
         <p class="text-gray-500 text-sm">Kelola aset dan inventaris masjid dengan QR code</p>
       </div>
-      <button @click="modalOpen = true; editMode = false; form.reset()" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
-        <PlusIcon class="w-5 h-5" /> Tambah Aset
-      </button>
+      <div class="flex gap-2">
+        <Link :href="route('asset-categories.index')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
+          <CogIcon class="w-5 h-5" />
+          Kelola Kategori
+        </Link>
+        <button @click="modalOpen = true; editMode = false; form.reset()" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
+          <PlusIcon class="w-5 h-5" /> Tambah Aset
+        </button>
+      </div>
     </div>
 
     <!-- Stats Cards -->
