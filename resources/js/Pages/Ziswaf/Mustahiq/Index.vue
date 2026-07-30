@@ -3,7 +3,15 @@
         <div class="space-y-6">
             <!-- Header -->
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-900">Data Mustahik (Penerima ZISWAF)</h1>
+                <div class="flex items-center gap-4">
+                    <a :href="route('ziswaf.donations.index')" class="text-gray-500 hover:text-primary transition flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Kembali
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900">Data Mustahik (Penerima ZISWAF)</h1>
+                </div>
                 <button @click="showModal = true" class="btn-primary">
                     <i class="fas fa-plus mr-2"></i>Tambah Mustahik
                 </button>

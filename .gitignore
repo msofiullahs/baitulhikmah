@@ -1,47 +1,50 @@
-```
-# Dependency directories
-vendor/
+# Dependencies
 node_modules/
 
 # Build artifacts
-public/build/
-bootstrap/cache/
-storage/logs/
-storage/framework/cache/
-storage/framework/sessions/
-storage/framework/views/
+dist/
+build/
 
-# Environment specific
+# Environment
 .env
 .env.local
 .env.*
-!.env.example
 
-# IDE files
+# Editors
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# OS generated files
-.DS_Store
-Thumbs.db
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
 # Logs
 *.log
 
-# Compiled files
-*.php~
-*.vue~
-
-# Coverage reports
-coverage/
-*.gcov
-*.lcov
-*.profdata
-*.coverage
-
-# Temporary files
+# Temp files
 *.tmp
-*.temp
-```
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Testing
+.pytest_cache/
+.mypy_cache/
+
+# Java/Maven
+target/
+.gradle/
+
+# Virtual environments
+.venv/
+venv/
+env/

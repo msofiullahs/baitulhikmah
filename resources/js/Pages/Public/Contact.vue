@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon, FacebookIcon, InstagramIcon, YoutubeIcon } from '@heroicons/vue/24/outline';
+import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   contact_info: Object,
