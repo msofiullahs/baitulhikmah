@@ -34,7 +34,7 @@ class ZiswafController extends Controller
             'jumlah' => 'required|numeric|min:0',
             'tanggal' => 'required|date',
             'metode' => 'required|in:tunai,transfer,qris',
-            'kas_box_id' => 'required|exists:cashboxes,id',
+            'cashbox_id' => 'required|exists:cashboxes,id',
             'is_anonymous' => 'boolean',
         ]);
 

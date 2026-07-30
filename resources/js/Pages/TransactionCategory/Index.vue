@@ -13,7 +13,7 @@ const selectedTipe = ref(props.filters?.tipe || '');
 const modalOpen = ref(false);
 const editingItem = ref(null);
 
-const form = useForm({ nama: '', tipe: 'pemasukan', warna: '#3B82F6', ikon: '', kas_box_id: '' });
+const form = useForm({ nama: '', tipe: 'pemasukan', warna: '#3B82F6', ikon: '', cashbox_id: '' });
 
 const openEdit = (item) => {
   editingItem.value = item;
@@ -21,7 +21,7 @@ const openEdit = (item) => {
   form.tipe = item.tipe;
   form.warna = item.warna || '#3B82F6';
   form.ikon = item.ikon || '';
-  form.kas_box_id = item.kas_box_id || '';
+  form.cashbox_id = item.cashbox_id || '';
   modalOpen.value = true;
 };
 
@@ -77,7 +77,7 @@ const deleteItem = (item) => {
         <div><label class="block text-sm font-medium text-gray-700 mb-1">Nama *</label><input v-model="form.nama" type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"></div>
         <div><label class="block text-sm font-medium text-gray-700 mb-1">Tipe *</label><select v-model="form.tipe" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"><option value="pemasukan">Pemasukan</option><option value="pengeluaran">Pengeluaran</option></select></div>
         <div><label class="block text-sm font-medium text-gray-700 mb-1">Warna</label><input v-model="form.warna" type="color" class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg"></div>
-        <div><label class="block text-sm font-medium text-gray-700 mb-1">Kas Box</label><select v-model="form.kas_box_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"><option value="">Umum</option><option v-for="kb in cashboxes" :key="kb.id" :value="kb.id">{{ kb.nama }}</option></select></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Kas Box</label><select v-model="form.cashbox_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"><option value="">Umum</option><option v-for="kb in cashboxes" :key="kb.id" :value="kb.id">{{ kb.nama }}</option></select></div>
         <div class="flex justify-end gap-3 pt-4 border-t"><button type="button" @click="modalOpen = false; form.reset(); editingItem.value = null;" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button><button type="submit" :disabled="form.processing" class="px-4 py-2 bg-primary text-white rounded-lg disabled:opacity-50">{{ form.processing ? 'Menyimpan...' : 'Simpan' }}</button></div>
       </form>
     </Modal>

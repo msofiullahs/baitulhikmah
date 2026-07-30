@@ -25,7 +25,7 @@ const form = useForm({
   jumlah: '',
   tanggal: new Date().toISOString().split('T')[0],
   metode: 'tunai',
-  kas_box_id: '',
+  cashbox_id: '',
   is_anonymous: false,
   catatan: '',
 });
@@ -212,11 +212,11 @@ const ziswafLabel = (category) => {
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Kas Box Tujuan <span class="text-red-500">*</span></label>
-            <select v-model="form.kas_box_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+            <select v-model="form.cashbox_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
               <option value="">Pilih Kas Box</option>
               <option v-for="box in cashboxes" :key="box.id" :value="box.id">{{ box.nama }}</option>
             </select>
-            <span v-if="form.errors.kas_box_id" class="text-red-500 text-xs">{{ form.errors.kas_box_id }}</span>
+            <span v-if="form.errors.cashbox_id" class="text-red-500 text-xs">{{ form.errors.cashbox_id }}</span>
           </div>
         </div>
 

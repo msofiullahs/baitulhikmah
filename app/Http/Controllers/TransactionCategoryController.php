@@ -37,7 +37,7 @@ class TransactionCategoryController extends Controller
             'tipe' => 'required|in:pemasukan,pengeluaran',
             'warna' => 'nullable|string|max:20',
             'ikon' => 'nullable|string|max:50',
-            'kas_box_id' => 'nullable|exists:cashboxes,id',
+            'cashbox_id' => 'nullable|exists:cashboxes,id',
         ]);
         
         TransactionCategory::create($validated);
@@ -52,7 +52,7 @@ class TransactionCategoryController extends Controller
             'tipe' => 'required|in:pemasukan,pengeluaran',
             'warna' => 'nullable|string|max:20',
             'ikon' => 'nullable|string|max:50',
-            'kas_box_id' => 'nullable|exists:cashboxes,id',
+            'cashbox_id' => 'nullable|exists:cashboxes,id',
         ]);
         
         $transactionCategory->update($validated);
