@@ -1,11 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import {
   HomeIcon, CurrencyDollarIcon, CubeTransparentIcon,
   EnvelopeIcon, CalendarIcon, UsersIcon, BookOpenIcon,
   MegaphoneIcon, Bars3Icon, XMarkIcon,
-  UserCircleIcon, BellIcon, ChevronDownIcon,
+  UserCircleIcon, ChevronDownIcon,
   DocumentChartBarIcon, UserGroupIcon, CogIcon, ShieldCheckIcon,
   GlobeAltIcon, Bars3CenterLeftIcon
 } from '@heroicons/vue/24/outline';
@@ -13,6 +13,30 @@ import FlashMessage from '@/Components/FlashMessage.vue';
 
 const page = usePage();
 const sidebarOpen = ref(false);
+const userMenuOpen = ref(false);
+
+const toggleUserMenu = () => {
+  userMenuOpen.value = !userMenuOpen.value;
+};
+
+const closeUserMenu = () => {
+  userMenuOpen.value = false;
+};
+
+const handleClickOutside = (event) => {
+  const target = event.target;
+  if (!target.closest('.user-menu-container')) {
+    closeUserMenu();
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 
 const userRole = computed(() => page.props.auth.user.roles?.[0]?.name || 'User');
 const isSuperAdmin = computed(() => userRole.value === 'Super Admin');
@@ -48,8 +72,6 @@ const navigation = computed(() => {
     return menu.roles.includes('all') || menu.roles.includes(userRole.value);
   });
 });
-
-const userMenuOpen = ref(false);
 </script>
 
 <template>
@@ -126,14 +148,9 @@ const userMenuOpen = ref(false);
           <div class="flex-1"></div>
 
           <div class="flex items-center gap-4">
-            <button class="p-2 text-gray-400 hover:text-gray-600 relative">
-              <BellIcon class="w-6 h-6" />
-              <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-
-            <div class="relative">
+            <div class="relative user-menu-container">
               <button 
-                @click="userMenuOpen = !userMenuOpen" 
+                @click="toggleUserMenu" 
                 class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
               >
                 <UserCircleIcon class="w-8 h-8 text-gray-400" />
@@ -146,7 +163,7 @@ const userMenuOpen = ref(false);
                 <ChevronDownIcon class="w-4 h-4" />
               </button>
 
-              <div v-if="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border">
+              <div v-if="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border z-50">
                 <Link 
                   :href="route('profile.edit')" 
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
