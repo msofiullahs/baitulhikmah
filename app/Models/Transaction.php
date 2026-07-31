@@ -11,7 +11,7 @@ class Transaction extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'no_transaksi', 'cashbox_id', 'kategori_id', 'jenis', 'jumlah',
+        'no_transaksi', 'cashbox_id', 'category_id', 'jenis', 'jumlah',
         'tanggal', 'keterangan', 'bukti', 'jamaah_id', 'metode',
         'status', 'approved_by', 'approved_at', 'created_by'
     ];

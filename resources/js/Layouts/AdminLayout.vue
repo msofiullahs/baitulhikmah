@@ -7,7 +7,7 @@ import {
   MegaphoneIcon, Bars3Icon, XMarkIcon,
   UserCircleIcon, BellIcon, ChevronDownIcon,
   DocumentChartBarIcon, UserGroupIcon, CogIcon, ShieldCheckIcon,
-  GlobeAltIcon
+  GlobeAltIcon, Bars3CenterLeftIcon
 } from '@heroicons/vue/24/outline';
 import FlashMessage from '@/Components/FlashMessage.vue';
 
@@ -71,33 +71,15 @@ const userMenuOpen = ref(false);
       <!-- Header Sidebar -->
       <div 
         :class="[
-          'flex items-center justify-between h-16 px-6 border-b border-white/10 flex-shrink-0',
+          'flex items-center justify-between lg:justify-center h-16 px-6 border-b border-white/10 flex-shrink-0',
           isSuperAdmin ? 'bg-gray-950' : 'bg-[#0a4a32]'
         ]"
       >
-        <Link :href="route('dashboard')" class="flex items-center gap-3">
-          <div 
-            :class="[
-              'w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm',
-              isSuperAdmin ? 'bg-red-500 text-white' : 'bg-[#c9a96e] text-[#0d5c3e]'
-            ]"
-          >
-            {{ isSuperAdmin ? 'SA' : 'BH' }}
-          </div>
-          <div>
-            <span class="font-bold text-lg tracking-wide block leading-tight">Baitul Hikmah</span>
-            <span 
-              :class="[
-                'text-xs',
-                isSuperAdmin ? 'text-red-400' : 'text-gray-300'
-              ]"
-            >
-              {{ userRole }}
-            </span>
-          </div>
+        <Link :href="route('dashboard')" class="flex items-center">
+          <img src="/assets/logo-1.png" class="h-14" />
         </Link>
         <button @click="sidebarOpen = false" class="lg:hidden text-white">
-          <XMarkIcon class="w-6 h-6" />
+          <Bars3CenterLeftIcon class="w-6 h-6" />
         </button>
       </div>
 

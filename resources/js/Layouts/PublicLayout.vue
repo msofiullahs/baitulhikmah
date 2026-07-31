@@ -33,12 +33,8 @@ const navItems = [
     <nav class="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between items-center h-16">
-          <Link :href="route('public.home')" class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-[#0d5c3e] rounded-full flex items-center justify-center text-white font-bold text-sm">BH</div>
-            <div>
-              <h1 class="font-bold text-[#0d5c3e] text-lg leading-tight">Baitul Hikmah</h1>
-              <p class="text-xs text-gray-500">Masjid & Pusat Kegiatan Islam</p>
-            </div>
+          <Link :href="route('public.home')" class="flex items-center gap-3"> 
+            <img src="/assets/logo-1.png" class="h-14" />
           </Link>
 
           <!-- Desktop Menu -->
@@ -94,31 +90,25 @@ const navItems = [
     <!-- Footer - Hijau Tua -->
     <footer class="bg-[#0d5c3e] text-white mt-12">
       <div class="max-w-7xl mx-auto px-4 py-12">
-        <div class="grid md:grid-cols-4 gap-8">
+        <div class="flex md:justify-between">
           <div>
             <h3 class="font-bold text-lg mb-4">Baitul Hikmah</h3>
             <p class="text-sm text-gray-300">Masjid sebagai pusat ibadah, pendidikan, dan kegiatan sosial umat Islam.</p>
           </div>
-          <div>
-            <h4 class="font-semibold mb-4">Menu</h4>
-            <ul class="space-y-2 text-sm text-gray-300">
-              <li v-for="item in navItems"><Link :href="route(item.href)" class="hover:text-[#c9a96e] transition">{{ item.name }}</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-4">Kontak</h4>
-            <ul class="space-y-2 text-sm text-gray-300">
-              <li>Jl. Mawar No. 10</li>
-              <li>081234567890</li>
-              <li>admin@baitulhikmah.id</li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-4">Ikuti Kami</h4>
-            <div class="flex gap-3">
-              <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#c9a96e] hover:text-[#0d5c3e] transition">FB</a>
-              <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#c9a96e] hover:text-[#0d5c3e] transition">IG</a>
-              <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#c9a96e] hover:text-[#0d5c3e] transition">YT</a>
+          <div class="flex gap-8">
+            <div>
+              <h4 class="font-semibold mb-4">Menu</h4>
+              <ul class="space-y-2 text-sm text-gray-300">
+                <li v-for="item in navItems"><Link :href="route(item.href)" class="hover:text-[#c9a96e] transition">{{ item.name }}</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-semibold mb-4">Kontak</h4>
+              <ul class="space-y-2 text-sm text-gray-300">
+                <li>Jl. Mawar No. 10</li>
+                <li>081234567890</li>
+                <li>admin@baitulhikmah.id</li>
+              </ul>
             </div>
           </div>
         </div>

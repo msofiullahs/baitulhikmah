@@ -32,7 +32,7 @@ const sholatTimes = [
       <!-- Pattern Background -->
       <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 60 60\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
       
-      <div class="max-w-7xl mx-auto px-4 relative">
+      <div class="grid grid-cols-2 max-w-7xl mx-auto px-4 relative justify-items-stretch">
         <div class="max-w-3xl">
           <h1 class="text-5xl font-bold mb-4 leading-tight">Selamat Datang di<br>Masjid Baitul Hikmah</h1>
           <p class="text-xl opacity-90 mb-8 flex items-center gap-2">
@@ -46,6 +46,9 @@ const sholatTimes = [
               Laporan Keuangan
             </Link>
           </div>
+        </div>
+        <div class="justify-items-center md:justify-items-end">
+          <img src="/assets/logo-nu-resmi.png" />
         </div>
       </div>
     </section>

@@ -39,7 +39,7 @@ class ReportController extends Controller
         }
 
         if ($category !== 'all') {
-            $query->where('kategori_id', $category);
+            $query->where('category_id', $category);
         }
 
         if ($kasBox !== 'all') {
