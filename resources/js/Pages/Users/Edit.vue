@@ -4,6 +4,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
+import PasswordInput from '@/Components/PasswordInput.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -338,12 +339,12 @@ const getRoleBadgeClass = (roleName) => {
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <InputLabel for="password" value="Password" />
-                            <TextInput id="password" type="password" class="mt-1 block w-full" v-model="createForm.password" required />
+                            <PasswordInput id="password" class="mt-1 block w-full" v-model="createForm.password" required />
                             <InputError :message="createForm.errors.password" class="mt-2" />
                         </div>
                         <div>
                             <InputLabel for="password_confirmation" value="Konfirmasi Password" />
-                            <TextInput id="password_confirmation" type="password" class="mt-1 block w-full" v-model="createForm.password_confirmation" required />
+                            <PasswordInput id="password_confirmation" class="mt-1 block w-full" v-model="createForm.password_confirmation" required />
                         </div>
                     </div>
 
@@ -391,12 +392,12 @@ const getRoleBadgeClass = (roleName) => {
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <InputLabel for="edit-password" value="Password Baru (Kosongkan jika tidak diubah)" />
-                            <TextInput id="edit-password" type="password" class="mt-1 block w-full" v-model="editForm.password" />
+                            <TextInput id="edit-password" class="mt-1 block w-full" v-model="editForm.password" />
                             <InputError :message="editForm.errors.password" class="mt-2" />
                         </div>
                         <div>
                             <InputLabel for="edit-password_confirmation" value="Konfirmasi Password" />
-                            <TextInput id="edit-password_confirmation" type="password" class="mt-1 block w-full" v-model="editForm.password_confirmation" />
+                            <TextInput id="edit-password_confirmation" class="mt-1 block w-full" v-model="editForm.password_confirmation" />
                         </div>
                     </div>
 

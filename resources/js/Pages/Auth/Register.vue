@@ -1,6 +1,12 @@
 <script setup>
 import { useForm, Head, Link } from '@inertiajs/vue3';
-// ... import komponen lain (AuthenticationCard, InputLabel, dll) ...
+import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import PasswordInput from '@/Components/PasswordInput.vue';
 
 const form = useForm({
     name: '',
@@ -45,13 +51,13 @@ const form = useForm({
             <!-- Password -->
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
-                <TextInput id="password" v-model="form.password" type="password" class="mt-1 block w-full" required autocomplete="new-password" />
+                <PasswordInput id="password" v-model="form.password" class="mt-1 block w-full" required autocomplete="new-password" />
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password" class="mt-1 block w-full" required autocomplete="new-password" />
+                <PasswordInput id="password_confirmation" v-model="form.password_confirmation" class="mt-1 block w-full" required autocomplete="new-password" />
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
