@@ -62,23 +62,23 @@
                 </div>
 
                 <!-- Role Permissions Matrix -->
-                <div class="bg-white rounded-lg shadow p-6 overflow-hidden">
+                <div class="bg-white rounded-lg shadow p-6">
                     <h3 class="text-lg font-bold mb-4">Matrix Permissions</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
+                    <div class="overflow-x-auto max-w-full">
+                        <table class="w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap sticky left-0 bg-gray-50 z-10 min-w-[150px]">Permission</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap sticky left-0 bg-gray-50 z-20 w-[200px] min-w-[200px] max-w-[200px]">Permission</th>
                                     <th v-for="role in roles" :key="role.id" 
-                                        class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap min-w-[100px]">
+                                        class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap w-[120px] min-w-[120px]">
                                         {{ role.display_name || role.name }}
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
                                 <tr v-for="permission in permissions" :key="permission.id">
-                                    <td class="px-4 py-3 text-sm font-medium whitespace-nowrap sticky left-0 bg-white z-10 border-r min-w-[150px]">{{ permission.display_name || permission.name }}</td>
-                                    <td v-for="role in roles" :key="role.id" class="px-4 py-3 text-center">
+                                    <td class="px-4 py-3 text-sm font-medium whitespace-nowrap sticky left-0 bg-white z-10 border-r w-[200px] min-w-[200px] max-w-[200px]">{{ permission.display_name || permission.name }}</td>
+                                    <td v-for="role in roles" :key="role.id" class="px-4 py-3 text-center w-[120px] min-w-[120px]">
                                         <input type="checkbox" 
                                                :checked="hasPermission(role, permission)"
                                                @change="togglePermission(role, permission, $event.target.checked)"
