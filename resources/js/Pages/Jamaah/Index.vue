@@ -74,7 +74,7 @@ const openEditModal = (jamaah) => {
 
 const submit = () => {
   if (editMode.value && selectedJamaah.value) {
-    form.post(route('jamaah.update', selectedJamaah.value.id), {
+    form.put(route('jamaah.update', selectedJamaah.value.id), {
       onSuccess: () => { modalOpen.value = false; form.reset(); },
       onError: () => {},
     });

@@ -32,7 +32,7 @@ const form = useForm({
 
 const submit = () => {
   if (editMode.value && currentDonation.value) {
-    form.post(route('ziswaf.donations.update', currentDonation.value.id), {
+    form.put(route('ziswaf.donations.update', currentDonation.value.id), {
       onSuccess: () => { closeModal(); },
     });
   } else {

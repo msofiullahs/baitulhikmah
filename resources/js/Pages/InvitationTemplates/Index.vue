@@ -271,8 +271,7 @@ const submitForm = () => {
     }
 
     if (isEditing.value) {
-        formData.append('_method', 'PUT');
-        router.post(route('invitation-templates.update', editingId.value), formData, {
+        router.put(route('invitation-templates.update', editingId.value), formData, {
             onSuccess: () => {
                 showModal.value = false;
                 resetForm();

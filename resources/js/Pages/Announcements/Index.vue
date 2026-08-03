@@ -41,7 +41,7 @@ const openEdit = (announcement) => {
 
 const submit = () => {
   if (editMode.value && currentAnnouncement.value) {
-    form.post(route('announcements.update', currentAnnouncement.value.id), {
+    form.put(route('announcements.update', currentAnnouncement.value.id), {
       onSuccess: () => { closeModal(); },
     });
   } else {
