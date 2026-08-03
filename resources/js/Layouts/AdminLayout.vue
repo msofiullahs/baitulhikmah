@@ -167,7 +167,7 @@ const navigation = computed(() => {
 
               <div v-if="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border z-50">
                 <Link 
-                  :href="route('profile.edit')" 
+                  :href="route('profile.show')" 
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Profil

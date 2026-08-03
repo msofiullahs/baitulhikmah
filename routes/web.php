@@ -59,7 +59,6 @@ Route::get('/kontak', [PublicContactController::class, 'index'])->name('public.c
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified',
 ])->group(function () {
     Route::get('/user/profile', [UserController::class, 'showProfile'])->name('profile.show');
     Route::put('/user/profile-information', [UserController::class, 'updateProfileInformation'])->name('user-profile-information.update');
@@ -69,7 +68,6 @@ Route::middleware([
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified',
 ])->prefix('admin/')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
