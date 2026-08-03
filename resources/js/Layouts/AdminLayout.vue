@@ -24,6 +24,8 @@ const closeUserMenu = () => {
 };
 
 const handleClickOutside = (event) => {
+  if (!userMenuOpen.value) return;
+  
   const target = event.target;
   if (!target.closest('.user-menu-container')) {
     closeUserMenu();
@@ -150,7 +152,7 @@ const navigation = computed(() => {
           <div class="flex items-center gap-4">
             <div class="relative user-menu-container">
               <button 
-                @click="toggleUserMenu" 
+                @click.stop="toggleUserMenu" 
                 class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
               >
                 <UserCircleIcon class="w-8 h-8 text-gray-400" />
@@ -165,7 +167,7 @@ const navigation = computed(() => {
 
               <div v-if="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border z-50">
                 <Link 
-                  :href="route('profile.edit')" 
+                  :href="route('profile.show')" 
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Profil

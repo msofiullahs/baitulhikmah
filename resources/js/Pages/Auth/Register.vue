@@ -41,11 +41,12 @@ const form = useForm({
                 <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
-            <!-- Email (Opsional) -->
+            <!-- Email (Opsional, hanya untuk reset password) -->
             <div class="mt-4">
-                <InputLabel for="email" value="Email (Opsional)" />
+                <InputLabel for="email" value="Email (Opsional, untuk reset password)" />
                 <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full" autocomplete="username" />
                 <InputError class="mt-2" :message="form.errors.email" />
+                <p class="text-xs text-gray-500 mt-1">Email hanya digunakan untuk fitur reset password</p>
             </div>
 
             <!-- Password -->
