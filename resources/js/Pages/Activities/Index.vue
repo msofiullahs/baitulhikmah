@@ -77,7 +77,7 @@ const openEdit = (act) => {
 
 const submit = () => {
   if (editMode.value) {
-    form.post(route('activities.update', editingItem.value.id), {
+    form.put(route('activities.update', editingItem.value.id), {
       onSuccess: () => { modalOpen.value = false; form.reset(); },
     });
   } else {
