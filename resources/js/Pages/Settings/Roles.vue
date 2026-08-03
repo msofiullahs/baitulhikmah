@@ -62,7 +62,7 @@
                 </div>
 
                 <!-- Role Permissions Matrix -->
-                <div class="bg-white rounded-lg shadow p-6">
+                <div class="bg-white rounded-lg shadow p-6 w-full">
                     <h3 class="text-lg font-bold mb-4">Matrix Permissions</h3>
                     <div class="overflow-x-auto max-w-full">
                         <table class="w-full divide-y divide-gray-200">

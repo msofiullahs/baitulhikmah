@@ -77,7 +77,7 @@ const navigation = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex">
+  <div class="min-h-screen bg-gray-100 flex max-w-screen overflow-x-hidden">
     <!-- Mobile Sidebar Overlay -->
     <div v-if="sidebarOpen" class="fixed inset-0 z-40 lg:hidden" @click="sidebarOpen = false">
       <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
@@ -139,7 +139,7 @@ const navigation = computed(() => {
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col min-h-screen">
+    <div class="flex-1 flex flex-col min-h-screen max-w-full">
       <!-- Top Navbar -->
       <header class="bg-white shadow-sm sticky top-0 z-30">
         <div class="flex items-center justify-between h-16 px-4 lg:px-8">
@@ -194,7 +194,7 @@ const navigation = computed(() => {
       </header>
 
       <!-- Page Content -->
-      <main class="flex-1 p-4 lg:p-8">
+      <main class="flex-1 p-4 lg:p-8 justify-self-stretch">
         <FlashMessage />
         <slot />
       </main>
