@@ -24,6 +24,8 @@ const closeUserMenu = () => {
 };
 
 const handleClickOutside = (event) => {
+  if (!userMenuOpen.value) return;
+  
   const target = event.target;
   if (!target.closest('.user-menu-container')) {
     closeUserMenu();
@@ -150,7 +152,7 @@ const navigation = computed(() => {
           <div class="flex items-center gap-4">
             <div class="relative user-menu-container">
               <button 
-                @click="toggleUserMenu" 
+                @click.stop="toggleUserMenu" 
                 class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
               >
                 <UserCircleIcon class="w-8 h-8 text-gray-400" />
