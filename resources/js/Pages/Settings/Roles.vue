@@ -61,32 +61,33 @@
                     </div>
                 </div>
 
-                <!-- Role Permissions Matrix -->
+                <!-- Role Permissions Matrix (Accordion) -->
                 <div class="bg-white rounded-lg shadow p-6">
                     <h3 class="text-lg font-bold mb-4">Matrix Permissions</h3>
-                    <div class="overflow-x-auto max-w-full">
-                        <table class="w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap sticky left-0 bg-gray-50 z-20 w-[200px] min-w-[200px] max-w-[200px]">Permission</th>
-                                    <th v-for="role in roles" :key="role.id" 
-                                        class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap w-[120px] min-w-[120px]">
-                                        {{ role.display_name || role.name }}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 bg-white">
-                                <tr v-for="permission in permissions" :key="permission.id">
-                                    <td class="px-4 py-3 text-sm font-medium whitespace-nowrap sticky left-0 bg-white z-10 border-r w-[200px] min-w-[200px] max-w-[200px]">{{ permission.display_name || permission.name }}</td>
-                                    <td v-for="role in roles" :key="role.id" class="px-4 py-3 text-center w-[120px] min-w-[120px]">
+                    <div class="space-y-2">
+                        <div v-for="role in roles" :key="role.id" class="border rounded-lg overflow-hidden">
+                            <button 
+                                @click="toggleAccordion(role.id)"
+                                class="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex justify-between items-center text-left transition-colors"
+                            >
+                                <span class="font-medium">{{ role.display_name || role.name }}</span>
+                                <i class="fas" :class="expandedRole === role.id ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </button>
+                            <div v-show="expandedRole === role.id" class="p-4 bg-white border-t">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    <div v-for="permission in permissions" :key="permission.id" class="flex items-center space-x-2">
                                         <input type="checkbox" 
+                                               :id="`perm-${role.id}-${permission.id}`"
                                                :checked="hasPermission(role, permission)"
                                                @change="togglePermission(role, permission, $event.target.checked)"
                                                class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        <label :for="`perm-${role.id}-${permission.id}`" class="text-sm text-gray-700 cursor-pointer select-none">
+                                            {{ permission.display_name || permission.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -197,6 +198,7 @@ const props = defineProps({
 });
 
 const activeTab = ref('roles');
+const expandedRole = ref(null);
 const showRoleModal = ref(false);
 const showPermissionModal = ref(false);
 const editingRole = ref(null);
@@ -224,6 +226,10 @@ const togglePermission = (role, permission, checked) => {
     } else {
         router.delete(route('roles.permissions.remove', [role.id, permission.id]));
     }
+};
+
+const toggleAccordion = (roleId) => {
+    expandedRole.value = expandedRole.value === roleId ? null : roleId;
 };
 
 const editRole = (role) => {
