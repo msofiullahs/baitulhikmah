@@ -62,22 +62,22 @@
                 </div>
 
                 <!-- Role Permissions Matrix -->
-                <div class="bg-white rounded-lg shadow p-6">
+                <div class="bg-white rounded-lg shadow p-6 overflow-hidden">
                     <h3 class="text-lg font-bold mb-4">Matrix Permissions</h3>
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200 max-w-full">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Permission</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Permission</th>
                                     <th v-for="role in roles" :key="role.id" 
-                                        class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                                        class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">
                                         {{ role.display_name || role.name }}
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
                                 <tr v-for="permission in permissions" :key="permission.id">
-                                    <td class="px-4 py-3 text-sm font-medium">{{ permission.display_name || permission.name }}</td>
+                                    <td class="px-4 py-3 text-sm font-medium whitespace-nowrap">{{ permission.display_name || permission.name }}</td>
                                     <td v-for="role in roles" :key="role.id" class="px-4 py-3 text-center">
                                         <input type="checkbox" 
                                                :checked="hasPermission(role, permission)"
