@@ -4,7 +4,7 @@ import DialogModal from './DialogModal.vue';
 import InputError from './InputError.vue';
 import PrimaryButton from './PrimaryButton.vue';
 import SecondaryButton from './SecondaryButton.vue';
-import TextInput from './TextInput.vue';
+import PasswordInput from './PasswordInput.vue';
 
 const emit = defineEmits(['confirmed']);
 
@@ -31,16 +31,12 @@ const form = reactive({
     processing: false,
 });
 
-const passwordInput = ref(null);
-
 const startConfirmingPassword = () => {
     axios.get(route('password.confirmation')).then(response => {
         if (response.data.confirmed) {
             emit('confirmed');
         } else {
             confirmingPassword.value = true;
-
-            setTimeout(() => passwordInput.value.focus(), 250);
         }
     });
 };
@@ -59,7 +55,6 @@ const confirmPassword = () => {
     }).catch(error => {
         form.processing = false;
         form.error = error.response.data.errors.password[0];
-        passwordInput.value.focus();
     });
 };
 
@@ -85,10 +80,8 @@ const closeModal = () => {
                 {{ content }}
 
                 <div class="mt-4">
-                    <TextInput
-                        ref="passwordInput"
+                    <PasswordInput
                         v-model="form.password"
-                        type="password"
                         class="mt-1 block w-3/4"
                         placeholder="Password"
                         autocomplete="current-password"

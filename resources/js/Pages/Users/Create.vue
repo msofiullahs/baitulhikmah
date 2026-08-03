@@ -4,6 +4,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
+import PasswordInput from '@/Components/PasswordInput.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -81,12 +82,12 @@ const submitCreate = () => {
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <InputLabel for="password" value="Password" />
-                                    <TextInput id="password" type="password" class="mt-1 block w-full" v-model="createForm.password" required />
+                                    <PasswordInput id="password" v-model="createForm.password" class="mt-1 block w-full" required />
                                     <InputError :message="createForm.errors.password" class="mt-2" />
                                 </div>
                                 <div>
                                     <InputLabel for="password_confirmation" value="Konfirmasi Password" />
-                                    <TextInput id="password_confirmation" type="password" class="mt-1 block w-full" v-model="createForm.password_confirmation" required />
+                                    <PasswordInput id="password_confirmation" v-model="createForm.password_confirmation" class="mt-1 block w-full" required />
                                 </div>
                             </div>
 

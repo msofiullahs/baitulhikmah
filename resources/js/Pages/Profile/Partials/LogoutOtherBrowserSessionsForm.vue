@@ -7,14 +7,13 @@ import DialogModal from '@/Components/DialogModal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import PasswordInput from '@/Components/PasswordInput.vue';
 
 defineProps({
     sessions: Array,
 });
 
 const confirmingLogout = ref(false);
-const passwordInput = ref(null);
 
 const form = useForm({
     password: '',
@@ -22,15 +21,12 @@ const form = useForm({
 
 const confirmLogout = () => {
     confirmingLogout.value = true;
-
-    setTimeout(() => passwordInput.value.focus(), 250);
 };
 
 const logoutOtherBrowserSessions = () => {
     form.delete(route('other-browser-sessions.destroy'), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
-        onError: () => passwordInput.value.focus(),
         onFinish: () => form.reset(),
     });
 };
@@ -107,10 +103,8 @@ const closeModal = () => {
                     Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.
 
                     <div class="mt-4">
-                        <TextInput
-                            ref="passwordInput"
+                        <PasswordInput
                             v-model="form.password"
-                            type="password"
                             class="mt-1 block w-3/4"
                             placeholder="Password"
                             autocomplete="current-password"

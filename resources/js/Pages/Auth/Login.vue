@@ -6,7 +6,7 @@ import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import PasswordInput from '@/Components/PasswordInput.vue';
 
 defineProps({
     canResetPassword: Boolean,
@@ -49,10 +49,9 @@ const form = useForm({
 
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
-                <TextInput
+                <PasswordInput
                     id="password"
                     v-model="form.password"
-                    type="password"
                     class="mt-1 block w-full"
                     required
                     autocomplete="current-password"
