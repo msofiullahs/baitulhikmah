@@ -57,7 +57,7 @@ const openEdit = (trx) => {
 
 const submit = () => {
   if (editMode.value) {
-    form.post(route('transactions.update', editingItem.value.id), {
+    form.put(route('transactions.update', editingItem.value.id), {
       onSuccess: () => { modalOpen.value = false; form.reset(); },
     });
   } else {

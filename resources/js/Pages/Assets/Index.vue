@@ -50,7 +50,7 @@ const openEdit = (asset) => {
 
 const submit = () => {
   if (editMode.value && currentAsset.value) {
-    form.post(route('assets.update', currentAsset.value.id), {
+    form.put(route('assets.update', currentAsset.value.id), {
       onSuccess: () => { closeModal(); },
       onError: () => {},
     });

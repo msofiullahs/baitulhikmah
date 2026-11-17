@@ -8,9 +8,38 @@ use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
 class UserController extends Controller
 {
+    public function showProfile()
+    {
+        return Inertia::render('Profile/Show', [
+            'sessions' => [], // Bisa ditambah jika pakai session management
+        ]);
+    }
+
+    public function updateProfileInformation(Request $request, UpdatesUserProfileInformation $updater)
+    {
+        $updater->update(auth()->user(), $request->all());
+
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        auth()->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()->back()->with('success', 'Password berhasil diperbarui.');
+    }
+
     public function index()
     {
         // Check permission inline

@@ -30,7 +30,7 @@ const form = useForm({
 
 const submit = () => {
   if (editMode.value && currentStudent.value) {
-    form.post(route('tpq.students.update', currentStudent.value.id), {
+    form.put(route('tpq.students.update', currentStudent.value.id), {
       onSuccess: () => { closeModal(); },
     });
   } else {

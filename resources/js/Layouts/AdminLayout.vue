@@ -24,6 +24,8 @@ const closeUserMenu = () => {
 };
 
 const handleClickOutside = (event) => {
+  if (!userMenuOpen.value) return;
+  
   const target = event.target;
   if (!target.closest('.user-menu-container')) {
     closeUserMenu();
@@ -75,7 +77,7 @@ const navigation = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex">
+  <div class="min-h-screen bg-gray-100 flex max-w-screen overflow-x-hidden">
     <!-- Mobile Sidebar Overlay -->
     <div v-if="sidebarOpen" class="fixed inset-0 z-40 lg:hidden" @click="sidebarOpen = false">
       <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
@@ -137,7 +139,7 @@ const navigation = computed(() => {
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col min-h-screen">
+    <div class="flex-1 flex flex-col min-h-screen max-w-full">
       <!-- Top Navbar -->
       <header class="bg-white shadow-sm sticky top-0 z-30">
         <div class="flex items-center justify-between h-16 px-4 lg:px-8">
@@ -150,7 +152,7 @@ const navigation = computed(() => {
           <div class="flex items-center gap-4">
             <div class="relative user-menu-container">
               <button 
-                @click="toggleUserMenu" 
+                @click.stop="toggleUserMenu" 
                 class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
               >
                 <UserCircleIcon class="w-8 h-8 text-gray-400" />
@@ -165,7 +167,7 @@ const navigation = computed(() => {
 
               <div v-if="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border z-50">
                 <Link 
-                  :href="route('profile.edit')" 
+                  :href="route('profile.show')" 
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Profil
@@ -192,7 +194,7 @@ const navigation = computed(() => {
       </header>
 
       <!-- Page Content -->
-      <main class="flex-1 p-4 lg:p-8">
+      <main class="flex-1 p-4 lg:p-8 justify-self-stretch">
         <FlashMessage />
         <slot />
       </main>
