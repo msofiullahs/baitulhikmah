@@ -87,7 +87,7 @@ const sholatTimes = [
                   v-show="currentSlide === index"
                   :src="slide.src"
                   :alt="slide.alt"
-                  class="absolute inset-0 w-full h-full object-contain p-6"
+                  class="hero-slide-image absolute inset-0 w-full h-full object-contain p-6"
                 />
               </transition-group>
 
@@ -246,5 +246,12 @@ const sholatTimes = [
 .hero-slide-enter-from,
 .hero-slide-leave-to {
   opacity: 0;
+}
+.hero-slide-image {
+  filter:
+    drop-shadow(2px 0 0 #ffffff)
+    drop-shadow(-2px 0 0 #ffffff)
+    drop-shadow(0 2px 0 #ffffff)
+    drop-shadow(0 -2px 0 #ffffff);
 }
 </style>
