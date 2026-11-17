@@ -20,7 +20,7 @@ const navItems = [
     <div class="bg-[#0d5c3e] text-white text-xs py-2 hidden md:block">
       <div class="max-w-7xl mx-auto px-4 flex justify-between">
         <div class="flex items-center gap-4">
-          <span class="flex items-center gap-1"><MapPinIcon class="w-3 h-3" /> Jl. Mawar No. 10</span>
+          <span class="flex items-center gap-1"><MapPinIcon class="w-3 h-3" /> Pesona Sari Residence</span>
           <span class="flex items-center gap-1"><PhoneIcon class="w-3 h-3" /> 081234567890</span>
         </div>
         <div class="flex items-center gap-4">
@@ -34,7 +34,7 @@ const navItems = [
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between items-center h-16">
           <Link :href="route('public.home')" class="flex items-center gap-3"> 
-            <img src="/assets/logo-1.png" class="h-14" />
+            <img src="/assets/mbh-horizontal.png" class="h-14" />
           </Link>
 
           <!-- Desktop Menu -->

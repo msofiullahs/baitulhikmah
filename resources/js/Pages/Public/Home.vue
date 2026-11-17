@@ -18,8 +18,7 @@ const formatRupiah = (num) => 'Rp ' + Number(num).toLocaleString('id-ID');
 // Hero image slider
 const heroSlides = [
   { src: '/assets/logo-nu-resmi.png', alt: 'Logo NU' },
-  { src: '/assets/logo-1.png', alt: 'Logo Masjid Baitul Hikmah' },
-  { src: '/assets/logo.png', alt: 'Logo' },
+  { src: '/assets/mbh-original.png', alt: 'Logo Masjid Baitul Hikmah' },
 ];
 const currentSlide = ref(0);
 let slideTimer = null;
@@ -80,7 +79,7 @@ const sholatTimes = [
         <div class="justify-items-center md:justify-items-end">
           <!-- Image Slider -->
           <div class="relative w-full max-w-sm group" @mouseenter="clearInterval(slideTimer)" @mouseleave="restartSlider()">
-            <div class="relative overflow-hidden rounded-2xl aspect-square bg-white/10 backdrop-blur border border-white/20 shadow-xl">
+            <div class="relative overflow-hidden aspect-video">
               <transition-group name="hero-slide">
                 <img
                   v-for="(slide, index) in heroSlides"
