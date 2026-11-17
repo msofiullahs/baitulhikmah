@@ -5,7 +5,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { DownloadIcon, PrinterIcon } from '@heroicons/vue/24/outline';
+import { ArrowDownTrayIcon as DownloadIcon, PrinterIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   transactions: Object,

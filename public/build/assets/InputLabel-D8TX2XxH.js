@@ -1,1 +1,0 @@
-import{E as e,R as t,g as n,w as r}from"./app-N9NWHsIP.js";var i={class:`block font-medium text-sm text-gray-700`},a={key:0},o={key:1},s={__name:`InputLabel`,props:{value:String},setup(s){return(c,l)=>(r(),n(`label`,i,[s.value?(r(),n(`span`,a,t(s.value),1)):(r(),n(`span`,o,[e(c.$slots,`default`)]))]))}};export{s as t};

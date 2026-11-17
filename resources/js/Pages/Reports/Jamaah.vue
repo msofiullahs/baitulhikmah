@@ -5,7 +5,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { UserGroupIcon, DownloadIcon, PrinterIcon } from '@heroicons/vue/24/outline';
+import { UserGroupIcon, ArrowDownTrayIcon as DownloadIcon, PrinterIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   jamaahs: Object,

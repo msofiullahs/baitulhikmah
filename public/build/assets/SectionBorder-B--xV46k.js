@@ -1,1 +1,0 @@
-import{g as e,p as t,w as n}from"./app-N9NWHsIP.js";import{t as r}from"./_plugin-vue_export-helper-BDNMzG2s.js";var i={},a={class:`hidden sm:block`};function o(r,i){return n(),e(`div`,a,[...i[0]||=[t(`div`,{class:`py-8`},[t(`div`,{class:`border-t border-gray-200`})],-1)]])}var s=r(i,[[`render`,o]]);export{s as t};

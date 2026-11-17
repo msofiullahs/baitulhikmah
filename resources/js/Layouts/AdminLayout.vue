@@ -100,7 +100,7 @@ const navigation = computed(() => {
         ]"
       >
         <Link :href="route('dashboard')" class="flex items-center">
-          <img src="/assets/logo-1.png" class="h-14" />
+          <img src="/assets/mbh-horizontal.png" class="logo-glow h-14" />
         </Link>
         <button @click="sidebarOpen = false" class="lg:hidden text-white">
           <Bars3CenterLeftIcon class="w-6 h-6" />
@@ -201,3 +201,12 @@ const navigation = computed(() => {
     </div>
   </div>
 </template>
+<style scoped>
+.logo-glow {
+  filter:
+    drop-shadow(2px 0 0 #ffffff)
+    drop-shadow(-2px 0 0 #ffffff)
+    drop-shadow(0 2px 0 #ffffff)
+    drop-shadow(0 -2px 0 #ffffff);
+}
+</style>
