@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('jamaahs', function (Blueprint $table) {
             $table->id();
-            $table->string('no_kartu')->unique()->nullable(); // Kartu jamaah digital
+            $table->string('no_kartu', 191)->unique()->nullable(); // Kartu jamaah digital
             $table->string('nama');
             $table->string('nik', 20)->nullable();
             $table->enum('jenis_kelamin', ['L', 'P']);
