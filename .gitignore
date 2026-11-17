@@ -1,14 +1,1 @@
-```vue
-<template>
-  <div class="roles-settings">
-    <!-- Roles management interface -->
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'RolesSettings',
-  // Component logic here
-}
-</script>
-```
+Nothing should be ignored based on the provided file changes. The only modified file is a Vue component ('resources/js/Pages/Settings/Roles.vue'), which is a source code file that should not be ignored. No build artifacts, dependencies, or temporary files are present in the changes.
