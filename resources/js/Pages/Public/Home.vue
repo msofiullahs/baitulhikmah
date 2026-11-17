@@ -17,7 +17,7 @@ const formatRupiah = (num) => 'Rp ' + Number(num).toLocaleString('id-ID');
 
 // Hero image slider
 const heroSlides = [
-  { src: '/assets/logo-nu-resmi.png', alt: 'Logo NU' },
+  { src: '/assets/logo-nu.svg', alt: 'Logo NU' },
   { src: '/assets/mbh-original.png', alt: 'Logo Masjid Baitul Hikmah' },
 ];
 const currentSlide = ref(0);
