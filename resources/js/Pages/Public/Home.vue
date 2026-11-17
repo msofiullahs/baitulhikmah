@@ -1,7 +1,8 @@
 <script setup>
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { ClockIcon, MapPinIcon, PhoneIcon, CalendarIcon, MegaphoneIcon } from '@heroicons/vue/24/outline';
+import { ClockIcon, MapPinIcon, PhoneIcon, CalendarIcon, MegaphoneIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps({
   masjid_profile: Object,
@@ -13,6 +14,35 @@ const props = defineProps({
 });
 
 const formatRupiah = (num) => 'Rp ' + Number(num).toLocaleString('id-ID');
+
+// Hero image slider
+const heroSlides = [
+  { src: '/assets/logo-nu-resmi.png', alt: 'Logo NU' },
+  { src: '/assets/logo-1.png', alt: 'Logo Masjid Baitul Hikmah' },
+  { src: '/assets/logo.png', alt: 'Logo' },
+];
+const currentSlide = ref(0);
+let slideTimer = null;
+
+const nextSlide = () => {
+  currentSlide.value = (currentSlide.value + 1) % heroSlides.length;
+};
+const prevSlide = () => {
+  currentSlide.value = (currentSlide.value - 1 + heroSlides.length) % heroSlides.length;
+};
+const goToSlide = (index) => {
+  currentSlide.value = index;
+  restartSlider();
+};
+const restartSlider = () => {
+  clearInterval(slideTimer);
+  slideTimer = setInterval(nextSlide, 4000);
+};
+
+onMounted(() => {
+  slideTimer = setInterval(nextSlide, 4000);
+});
+onBeforeUnmount(() => clearInterval(slideTimer));
 
 const sholatTimes = [
   { name: 'Subuh', key: 'subuh', icon: '' },
@@ -48,7 +78,52 @@ const sholatTimes = [
           </div>
         </div>
         <div class="justify-items-center md:justify-items-end">
-          <img src="/assets/logo-nu-resmi.png" />
+          <!-- Image Slider -->
+          <div class="relative w-full max-w-sm group" @mouseenter="clearInterval(slideTimer)" @mouseleave="restartSlider()">
+            <div class="relative overflow-hidden rounded-2xl aspect-square bg-white/10 backdrop-blur border border-white/20 shadow-xl">
+              <transition-group name="hero-slide">
+                <img
+                  v-for="(slide, index) in heroSlides"
+                  :key="slide.src"
+                  v-show="currentSlide === index"
+                  :src="slide.src"
+                  :alt="slide.alt"
+                  class="absolute inset-0 w-full h-full object-contain p-6"
+                />
+              </transition-group>
+
+              <!-- Prev / Next Arrows -->
+              <button
+                type="button"
+                aria-label="Sebelumnya"
+                @click="prevSlide()"
+                class="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-black/30 text-white opacity-0 group-hover:opacity-100 hover:bg-black/50 transition"
+              >
+                <ChevronLeftIcon class="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Berikutnya"
+                @click="goToSlide((currentSlide + 1) % heroSlides.length)"
+                class="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-black/30 text-white opacity-0 group-hover:opacity-100 hover:bg-black/50 transition"
+              >
+                <ChevronRightIcon class="w-5 h-5" />
+              </button>
+            </div>
+
+            <!-- Dots -->
+            <div class="flex justify-center gap-2 mt-4">
+              <button
+                v-for="(slide, index) in heroSlides"
+                :key="'dot-' + slide.src"
+                type="button"
+                :aria-label="'Slide ' + (index + 1)"
+                @click="goToSlide(index)"
+                class="h-2.5 rounded-full transition-all"
+                :class="currentSlide === index ? 'w-8 bg-[#c9a96e]' : 'w-2.5 bg-white/40 hover:bg-white/70'"
+              ></button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -164,3 +239,13 @@ const sholatTimes = [
     </section>
   </PublicLayout>
 </template>
+<style scoped>
+.hero-slide-enter-active,
+.hero-slide-leave-active {
+  transition: opacity 0.7s ease;
+}
+.hero-slide-enter-from,
+.hero-slide-leave-to {
+  opacity: 0;
+}
+</style>
