@@ -1,0 +1,1 @@
+import{M as e,y as t}from"./app-DqppcBC7.js";import n from"./Create-BbXb6BKF.js";var r={__name:`Edit`,props:{user:Object,roles:Array},setup(r){return(i,a)=>(e(),t(n,{user:r.user,roles:r.roles},null,8,[`user`,`roles`]))}};export{r as default};

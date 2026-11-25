@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Mustahiq extends Model
 {
-    protected $fillable = ['nama', 'alamat', 'no_hp', 'kategori', 'status'];
+    protected $fillable = ['nama', 'alamat', 'no_hp', 'kategori', 'status', 'catatan'];
 
     public function distributions(): HasMany
     {

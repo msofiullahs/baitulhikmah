@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { router, Link, Head, useForm } from '@inertiajs/vue3';
 import { PlusIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon, AcademicCapIcon } from '@heroicons/vue/24/outline';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
@@ -28,6 +28,32 @@ const form = useForm({
   class_ids: [],
 });
 
+const classOptions = computed(() => {
+  const options = new Map(props.classes.map(item => [item.id, item]));
+  for (const item of currentStudent.value?.classes ?? []) {
+    options.set(item.id, item);
+  }
+  return [...options.values()];
+});
+
+const openEdit = (student) => {
+  form.resetAndClearErrors();
+  currentStudent.value = student;
+  editMode.value = true;
+  Object.assign(form, {
+    nis: student.nis ?? '',
+    nama: student.nama,
+    jenis_kelamin: student.jenis_kelamin,
+    tanggal_lahir: student.tanggal_lahir?.slice(0, 10) ?? '',
+    nama_ortu: student.nama_ortu ?? '',
+    no_hp_ortu: student.no_hp_ortu ?? '',
+    alamat: student.alamat ?? '',
+    tanggal_masuk: student.tanggal_masuk?.slice(0, 10) ?? '',
+    class_ids: student.classes.map(item => item.id),
+  });
+  modalOpen.value = true;
+};
+
 const submit = () => {
   if (editMode.value && currentStudent.value) {
     form.put(route('tpq.students.update', currentStudent.value.id), {
@@ -44,7 +70,7 @@ const closeModal = () => {
   modalOpen.value = false;
   editMode.value = false;
   currentStudent.value = null;
-  form.reset();
+  form.resetAndClearErrors();
 };
 
 const deleteItem = (item) => {
@@ -85,7 +111,7 @@ const statusBadge = (status) => {
         <h1 class="text-2xl font-bold text-gray-800">Data Santri TPQ</h1>
         <p class="text-gray-500 text-sm">Kelola data santri, kelas, dan pembayaran SPP</p>
       </div>
-      <button @click="modalOpen = true; editMode = false; form.reset()" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
+      <button @click="modalOpen = true; editMode = false; form.resetAndClearErrors()" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
         <PlusIcon class="w-5 h-5" /> Tambah Santri
       </button>
     </div>
@@ -132,6 +158,7 @@ const statusBadge = (status) => {
             </td>
             <td class="px-6 py-4 text-center" v-html="statusBadge(item.status || 'aktif')"></td>
             <td class="px-6 py-4 text-center">
+              <button @click="openEdit(item)" class="text-gray-400 hover:text-primary mx-1" title="Edit"><PencilIcon class="w-5 h-5 inline" /></button>
               <button @click="deleteItem(item)" class="text-gray-400 hover:text-red-600 mx-1" title="Hapus"><TrashIcon class="w-5 h-5 inline" /></button>
             </td>
           </tr>
@@ -173,6 +200,7 @@ const statusBadge = (status) => {
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
             <input v-model="form.tanggal_lahir" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+            <span v-if="form.errors.tanggal_lahir" class="text-red-500 text-xs">{{ form.errors.tanggal_lahir }}</span>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Masuk <span class="text-red-500">*</span></label>
@@ -201,9 +229,10 @@ const statusBadge = (status) => {
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Kelas (Multi-select)</label>
           <select v-model="form.class_ids" multiple class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none h-32">
-            <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.nama }}</option>
+            <option v-for="cls in classOptions" :key="cls.id" :value="cls.id">{{ cls.nama }}</option>
           </select>
           <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd untuk pilih beberapa kelas</p>
+          <p v-for="(message, key) in form.errors" v-show="key.startsWith('class_ids')" :key="key" class="text-red-500 text-xs">{{ message }}</p>
         </div>
 
         <div class="flex justify-end gap-3 pt-4 border-t">

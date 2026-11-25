@@ -123,20 +123,21 @@
                 <!-- API Keys -->
                 <div>
                     <h3 class="text-lg font-medium mb-4">API Integration (Opsional)</h3>
+                    <p class="mb-3 text-sm text-gray-600">Kosongkan kolom untuk mempertahankan kredensial yang sudah tersimpan.</p>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Facebook Page Access Token</label>
-                            <input v-model="form.fb_access_token" type="password" 
+                            <input v-model="form.fb_access_token" type="password" autocomplete="new-password"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Instagram Basic Display Token</label>
-                            <input v-model="form.ig_access_token" type="password" 
+                            <input v-model="form.ig_access_token" type="password" autocomplete="new-password"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">YouTube API Key</label>
-                            <input v-model="form.yt_api_key" type="password" 
+                            <input v-model="form.yt_api_key" type="password" autocomplete="new-password"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
                         </div>
                     </div>
@@ -167,10 +168,14 @@
                     </div>
                 </div>
 
+                <ul v-if="form.hasErrors" role="alert" class="list-disc pl-5 text-sm text-red-700">
+                    <li v-for="(message, key) in form.errors" :key="key">{{ message }}</li>
+                </ul>
+
                 <!-- Actions -->
                 <div class="flex justify-end space-x-3 pt-6 border-t">
                     <button type="button" @click="resetForm" class="btn-secondary">Reset</button>
-                    <button type="submit" class="btn-primary">Simpan Social Media</button>
+                    <button type="submit" :disabled="form.processing" class="btn-primary">Simpan Social Media</button>
                 </div>
             </form>
         </div>
@@ -178,15 +183,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 const props = defineProps({
     settings: Object,
 });
 
-const form = ref({
+const form = useForm({
     facebook: props.settings?.facebook || '',
     instagram: props.settings?.instagram || '',
     twitter: props.settings?.twitter || '',
@@ -201,38 +205,22 @@ const form = ref({
     enable_email_broadcast: props.settings?.enable_email_broadcast || false,
     auto_post_facebook: props.settings?.auto_post_facebook || false,
     auto_post_instagram: props.settings?.auto_post_instagram || false,
-    fb_access_token: props.settings?.fb_access_token || '',
-    ig_access_token: props.settings?.ig_access_token || '',
-    yt_api_key: props.settings?.yt_api_key || '',
+    fb_access_token: '',
+    ig_access_token: '',
+    yt_api_key: '',
 });
 
 const submitForm = () => {
-    router.post(route('settings.social.update'), form.value, {
+    form.post(route('settings.social.update'), {
+        preserveScroll: true,
         onSuccess: () => {
-            // Show success message
+            form.fb_access_token = '';
+            form.ig_access_token = '';
+            form.yt_api_key = '';
+            form.defaults();
         },
     });
 };
 
-const resetForm = () => {
-    form.value = {
-        facebook: props.settings?.facebook || '',
-        instagram: props.settings?.instagram || '',
-        twitter: props.settings?.twitter || '',
-        youtube: props.settings?.youtube || '',
-        tiktok: props.settings?.tiktok || '',
-        whatsapp_group: props.settings?.whatsapp_group || '',
-        website: props.settings?.website || '',
-        telegram: props.settings?.telegram || '',
-        linkedin: props.settings?.linkedin || '',
-        google_maps: props.settings?.google_maps || '',
-        enable_wa_broadcast: props.settings?.enable_wa_broadcast || false,
-        enable_email_broadcast: props.settings?.enable_email_broadcast || false,
-        auto_post_facebook: props.settings?.auto_post_facebook || false,
-        auto_post_instagram: props.settings?.auto_post_instagram || false,
-        fb_access_token: props.settings?.fb_access_token || '',
-        ig_access_token: props.settings?.ig_access_token || '',
-        yt_api_key: props.settings?.yt_api_key || '',
-    };
-};
+const resetForm = () => form.resetAndClearErrors();
 </script>

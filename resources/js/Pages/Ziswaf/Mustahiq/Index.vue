@@ -12,7 +12,7 @@
                     </a>
                     <h1 class="text-2xl font-bold text-gray-900">Data Mustahik (Penerima ZISWAF)</h1>
                 </div>
-                <button @click="showModal = true" class="btn-primary">
+                <button @click="resetForm(); showModal = true" class="btn-primary">
                     <i class="fas fa-plus mr-2"></i>Tambah Mustahik
                 </button>
             </div>
@@ -21,38 +21,39 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-white rounded-lg shadow p-4">
                     <div class="text-sm text-gray-500">Total Mustahik</div>
-                    <div class="text-2xl font-bold text-blue-600">{{ mustahiqs.total }}</div>
+                    <div class="text-2xl font-bold text-blue-600">{{ totalMustahiqs }}</div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-4">
                     <div class="text-sm text-gray-500">Fakir</div>
-                    <div class="text-2xl font-bold text-red-600">{{ countByCategory('Fakir') }}</div>
+                    <div class="text-2xl font-bold text-red-600">{{ countByCategory('fakir') }}</div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-4">
                     <div class="text-sm text-gray-500">Miskin</div>
-                    <div class="text-2xl font-bold text-orange-600">{{ countByCategory('Miskin') }}</div>
+                    <div class="text-2xl font-bold text-orange-600">{{ countByCategory('miskin') }}</div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-4">
                     <div class="text-sm text-gray-500">Asnaf Lainnya</div>
-                    <div class="text-2xl font-bold text-green-600">{{ mustahiqs.total - countByCategory('Fakir') - countByCategory('Miskin') }}</div>
+                    <div class="text-2xl font-bold text-green-600">{{ totalMustahiqs - countByCategory('fakir') - countByCategory('miskin') }}</div>
                 </div>
             </div>
 
             <!-- Search & Filter -->
             <div class="bg-white rounded-lg shadow p-4">
                 <div class="flex gap-4">
-                    <input v-model="search" type="text" placeholder="Cari nama mustahik..." 
+                    <input v-model="search" @keyup.enter="applyFilters" type="text" placeholder="Cari nama mustahik..."
                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"/>
-                    <select v-model="filterCategory" class="px-4 py-2 border rounded-lg">
+                    <select v-model="filterCategory" @change="applyFilters" class="px-4 py-2 border rounded-lg">
                         <option value="">Semua Kategori</option>
-                        <option value="Fakir">Fakir</option>
-                        <option value="Miskin">Miskin</option>
-                        <option value="Amil">Amil</option>
-                        <option value="Muallaf">Muallaf</option>
-                        <option value="Riqab">Riqab (Budak)</option>
-                        <option value="Gharimin">Gharimin (Berhutang)</option>
-                        <option value="Sabilillah">Sabilillah</option>
-                        <option value="Ibnu Sabil">Ibnu Sabil</option>
+                        <option value="fakir">Fakir</option>
+                        <option value="miskin">Miskin</option>
+                        <option value="amil">Amil</option>
+                        <option value="mualaf">Muallaf</option>
+                        <option value="riqab">Riqab (Budak)</option>
+                        <option value="gharimin">Gharimin (Berhutang)</option>
+                        <option value="fisabilillah">Sabilillah</option>
+                        <option value="ibnu_sabil">Ibnu Sabil</option>
                     </select>
+                    <button type="button" @click="applyFilters" class="btn-secondary">Cari</button>
                 </div>
             </div>
 
@@ -70,19 +71,19 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="mustahiq in filteredMustahiqs" :key="mustahiq.id">
+                        <tr v-for="mustahiq in mustahiqs.data" :key="mustahiq.id">
                             <td class="px-6 py-4 whitespace-nowrap">{{ mustahiq.nama }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                    {{ mustahiq.kategori }}
+                                <span class="px-2 py-1 text-xs rounded-full capitalize bg-blue-100 text-blue-800">
+                                    {{ mustahiq.kategori.replace('_', ' ') }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500">{{ mustahiq.alamat }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ mustahiq.no_hp || '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span :class="mustahiq.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
+                                <span :class="mustahiq.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                                       class="px-2 py-1 text-xs rounded-full">
-                                    {{ mustahiq.is_active ? 'Aktif' : 'Nonaktif' }}
+                                    {{ mustahiq.status === 'aktif' ? 'Aktif' : 'Nonaktif' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -111,14 +112,14 @@
                         <label class="block text-sm font-medium text-gray-700">Kategori (Asnaf)</label>
                         <select v-model="form.kategori" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             <option value="">Pilih Kategori</option>
-                            <option value="Fakir">Fakir - Tidak punya harta & tenaga</option>
-                            <option value="Miskin">Miskin - Punya sedikit harta</option>
-                            <option value="Amil">Amil - Pengelola ZISWAF</option>
-                            <option value="Muallaf">Muallaf - Baru masuk Islam</option>
-                            <option value="Riqab">Riqab - Budak/Hamba Sahaya</option>
-                            <option value="Gharimin">Gharimin - Orang Berhutang</option>
-                            <option value="Sabilillah">Sabilillah - Pejuang di Jalan Allah</option>
-                            <option value="Ibnu Sabil">Ibnu Sabil - Musafir Kehabisan Bekal</option>
+                            <option value="fakir">Fakir - Tidak punya harta & tenaga</option>
+                            <option value="miskin">Miskin - Punya sedikit harta</option>
+                            <option value="amil">Amil - Pengelola ZISWAF</option>
+                            <option value="mualaf">Muallaf - Baru masuk Islam</option>
+                            <option value="riqab">Riqab - Budak/Hamba Sahaya</option>
+                            <option value="gharimin">Gharimin - Orang Berhutang</option>
+                            <option value="fisabilillah">Sabilillah - Pejuang di Jalan Allah</option>
+                            <option value="ibnu_sabil">Ibnu Sabil - Musafir Kehabisan Bekal</option>
                         </select>
                     </div>
 
@@ -139,14 +140,17 @@
 
                     <div v-if="isEditing">
                         <label class="flex items-center">
-                            <input v-model="form.is_active" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
+                            <input v-model="form.status" true-value="aktif" false-value="tidak_aktif" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
                             <span class="ml-2 text-sm text-gray-700">Aktif</span>
                         </label>
                     </div>
 
+                    <ul v-if="form.hasErrors" role="alert" class="list-disc pl-5 text-sm text-red-700">
+                        <li v-for="(message, key) in form.errors" :key="key">{{ message }}</li>
+                    </ul>
                     <div class="flex justify-end gap-3 pt-4">
                         <button type="button" @click="showModal = false" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary">{{ isEditing ? 'Update' : 'Simpan' }}</button>
+                        <button type="submit" :disabled="form.processing" class="btn-primary">{{ isEditing ? 'Update' : 'Simpan' }}</button>
                     </div>
                 </form>
             </Modal>
@@ -156,89 +160,65 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     mustahiqs: Object,
+    counts: Object,
+    filters: Object,
 });
 
 const showModal = ref(false);
-const search = ref('');
-const filterCategory = ref('');
-const isEditing = ref(false);
+const search = ref(props.filters?.search ?? '');
+const filterCategory = ref(props.filters?.kategori ?? '');
 const editingId = ref(null);
-
-const form = ref({
+const isEditing = computed(() => editingId.value !== null);
+const form = useForm({
     nama: '',
     kategori: '',
     alamat: '',
     no_hp: '',
     catatan: '',
-    is_active: true,
+    status: 'aktif',
 });
 
-const filteredMustahiqs = computed(() => {
-    let data = props.mustahiqs.data || [];
-    
-    if (search.value) {
-        data = data.filter(m => m.nama.toLowerCase().includes(search.value.toLowerCase()));
-    }
-    
-    if (filterCategory.value) {
-        data = data.filter(m => m.kategori === filterCategory.value);
-    }
-    
-    return data;
-});
+const countByCategory = (category) => props.counts?.[category] ?? 0;
+const totalMustahiqs = computed(() => Object.values(props.counts ?? {}).reduce((sum, value) => sum + Number(value), 0));
 
-const countByCategory = (category) => {
-    return (props.mustahiqs.data || []).filter(m => m.kategori === category).length;
+const applyFilters = () => {
+    router.get(route('ziswaf.mustahiq.index'), { search: search.value, kategori: filterCategory.value }, { preserveState: true });
 };
 
 const resetForm = () => {
-    form.value = {
-        nama: '',
-        kategori: '',
-        alamat: '',
-        no_hp: '',
-        catatan: '',
-        is_active: true,
-    };
-    isEditing.value = false;
+    form.resetAndClearErrors();
     editingId.value = null;
 };
 
 const submitForm = () => {
+    const options = { onSuccess: () => {
+        showModal.value = false;
+        resetForm();
+    } };
     if (isEditing.value) {
-        router.put(route('mustahiq.update', editingId.value), form.value, {
-            onSuccess: () => {
-                showModal.value = false;
-                resetForm();
-            },
-        });
+        form.put(route('mustahiq.update', editingId.value), options);
     } else {
-        router.post(route('mustahiq.store'), form.value, {
-            onSuccess: () => {
-                showModal.value = false;
-                resetForm();
-            },
-        });
+        form.post(route('mustahiq.store'), options);
     }
 };
 
 const editMustahiq = (mustahiq) => {
-    form.value = {
+    form.resetAndClearErrors();
+    Object.assign(form, {
         nama: mustahiq.nama,
         kategori: mustahiq.kategori,
-        alamat: mustahiq.alamat,
-        no_hp: mustahiq.no_hp || '',
-        catatan: mustahiq.catatan || '',
-        is_active: mustahiq.is_active,
-    };
-    isEditing.value = true;
+        alamat: mustahiq.alamat ?? '',
+        no_hp: mustahiq.no_hp ?? '',
+        catatan: mustahiq.catatan ?? '',
+        status: mustahiq.status,
+    });
     editingId.value = mustahiq.id;
     showModal.value = true;
 };

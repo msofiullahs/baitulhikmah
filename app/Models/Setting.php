@@ -58,6 +58,15 @@ class Setting extends Model
 
     public static function mosqueProfile(): array
     {
+        $social = self::groupValues('social');
+        $socialLinks = [];
+        foreach (['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'whatsapp_group', 'website'] as $field) {
+            $value = $social[$field] ?? $social[$field.'_url'] ?? null;
+            if (filled($value)) {
+                $socialLinks[$field] = $value;
+            }
+        }
+
         $defaults = [
             'nama_masjid' => config('masjid.nama'),
             'alamat' => config('masjid.alamat'),
@@ -78,6 +87,7 @@ class Setting extends Model
 
         return array_replace(
             $defaults,
+            $socialLinks,
             array_intersect_key(self::groupValues('general'), $legacyFields),
             self::groupValues('masjid'),
         );

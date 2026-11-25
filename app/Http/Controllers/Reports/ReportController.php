@@ -8,6 +8,8 @@ use App\Models\Jamaah;
 use App\Models\Activity;
 use App\Models\Donation;
 use App\Models\Asset;
+use App\Models\AssetCategory;
+use App\Models\Cashbox;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +32,7 @@ class ReportController extends Controller
         $category = $request->input('category', 'all');
         $kasBox = $request->input('kas_box', 'all');
 
-        $query = Transaction::with(['category', 'creator'])
+        $query = Transaction::with(['category', 'creator', 'cashbox'])
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->orderBy('tanggal', 'desc');
 
@@ -43,7 +45,7 @@ class ReportController extends Controller
         }
 
         if ($kasBox !== 'all') {
-            $query->where('kas_box', $kasBox);
+            $query->where('cashbox_id', $kasBox);
         }
 
         $transactions = $query->paginate(50)->withQueryString();
@@ -63,6 +65,7 @@ class ReportController extends Controller
             'summary' => $summary,
             'filters' => compact('startDate', 'endDate', 'type', 'category', 'kasBox'),
             'categories' => $categories,
+            'cashboxes' => Cashbox::orderBy('nama')->get(['id', 'nama']),
         ]);
     }
 
@@ -83,7 +86,7 @@ class ReportController extends Controller
         }
 
         if ($category !== 'all') {
-            $query->whereHas('categories', fn($q) => $q->where('id', $category));
+            $query->whereHas('categories', fn($q) => $q->whereKey($category));
         }
 
         $jamaahs = $query->paginate(50)->withQueryString();
@@ -118,7 +121,7 @@ class ReportController extends Controller
         $category = $request->input('category', 'all');
         $status = $request->input('status', 'all');
 
-        $query = Activity::with(['creator', 'participants'])
+        $query = Activity::with('creator')
             ->whereBetween('tanggal_mulai', [$startDate, $endDate])
             ->orderBy('tanggal_mulai', 'desc');
 
@@ -158,19 +161,20 @@ class ReportController extends Controller
         $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
         $type = $request->input('type', 'all');
 
-        $query = Donation::whereBetween('tanggal', [$startDate, $endDate]);
+        $query = Donation::with('category')->whereBetween('tanggal', [$startDate, $endDate]);
 
         if ($type !== 'all') {
-            $query->where('jenis', $type);
+            $query->whereHas('category', fn ($category) => $category->where('kategori', $type));
         }
 
         $donations = $query->orderBy('tanggal', 'desc')->paginate(50)->withQueryString();
 
         $summary = [
             'total' => (clone $query)->sum('jumlah'),
-            'by_type' => Donation::selectRaw('jenis, COUNT(*) as count, SUM(jumlah) as total')
-                ->whereBetween('tanggal', [$startDate, $endDate])
-                ->groupBy('jenis')
+            'by_type' => Donation::join('ziswaf_categories', 'ziswaf_categories.id', '=', 'donations.ziswaf_category_id')
+                ->selectRaw('ziswaf_categories.kategori as jenis, COUNT(*) as count, SUM(donations.jumlah) as total')
+                ->whereBetween('donations.tanggal', [$startDate, $endDate])
+                ->groupBy('ziswaf_categories.kategori')
                 ->get(),
             'by_month' => Donation::selectRaw('DATE_FORMAT(tanggal, "%Y-%m") as month, SUM(jumlah) as total')
                 ->whereBetween('tanggal', [$startDate, $endDate])
@@ -191,14 +195,14 @@ class ReportController extends Controller
         $condition = $request->input('condition', 'all');
         $category = $request->input('category', 'all');
 
-        $query = Asset::with(['maintenance']);
+        $query = Asset::with('category');
 
         if ($condition !== 'all') {
             $query->where('kondisi', $condition);
         }
 
         if ($category !== 'all') {
-            $query->where('kategori', $category);
+            $query->where('category_id', $category);
         }
 
         $assets = $query->paginate(50)->withQueryString();
@@ -209,13 +213,15 @@ class ReportController extends Controller
             'by_condition' => Asset::selectRaw('kondisi, COUNT(*) as count, SUM(nilai_sisa) as value')
                 ->groupBy('kondisi')
                 ->get(),
-            'by_category' => Asset::selectRaw('kategori, COUNT(*) as count, SUM(nilai_sisa) as value')
-                ->groupBy('kategori')
+            'by_category' => Asset::join('asset_categories', 'asset_categories.id', '=', 'assets.category_id')
+                ->selectRaw('asset_categories.id as category_id, asset_categories.nama as kategori, COUNT(*) as count, SUM(assets.nilai_sisa) as value')
+                ->groupBy('asset_categories.id', 'asset_categories.nama')
                 ->get(),
         ];
 
         return Inertia::render('Reports/Assets', [
             'assets' => $assets,
+            'categories' => AssetCategory::orderBy('nama')->get(['id', 'nama']),
             'summary' => $summary,
             'filters' => compact('condition', 'category'),
         ]);

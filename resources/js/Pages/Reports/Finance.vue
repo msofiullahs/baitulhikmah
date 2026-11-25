@@ -12,13 +12,14 @@ const props = defineProps({
   summary: Object,
   filters: Object,
   categories: Array,
+  cashboxes: Array,
 });
 
 const startDate = ref(props.filters?.startDate || '');
 const endDate = ref(props.filters?.endDate || '');
 const type = ref(props.filters?.type || 'all');
 const category = ref(props.filters?.category || 'all');
-const kasBox = ref(props.filters?.kas_box || 'all');
+const kasBox = ref(props.filters?.kasBox || 'all');
 
 const filterReports = () => {
   router.get(route('reports.finance'), {
@@ -105,9 +106,7 @@ const printReport = () => {
           <label class="block text-xs font-medium text-gray-500 mb-1">Kas Box</label>
           <select v-model="kasBox" class="w-full text-sm border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
             <option value="all">Semua</option>
-            <option value="umum">Kas Umum</option>
-            <option value="tpq">Kas TPQ</option>
-            <option value="pembangunan">Kas Pembangunan</option>
+            <option v-for="box in cashboxes" :key="box.id" :value="String(box.id)">{{ box.nama }}</option>
           </select>
         </div>
       </div>
@@ -139,13 +138,7 @@ const printReport = () => {
               <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">{{ trx.category?.nama || '-' }}</span>
             </td>
             <td class="px-4 py-3 text-center">
-              <span :class="{
-                'bg-blue-100 text-blue-800': trx.kas_box === 'umum',
-                'bg-green-100 text-green-800': trx.kas_box === 'tpq',
-                'bg-purple-100 text-purple-800': trx.kas_box === 'pembangunan'
-              }" class="px-2 py-1 text-xs rounded">
-                {{ trx.kas_box }}
-              </span>
+              <span class="px-2 py-1 rounded text-xs bg-gray-100 text-gray-700">{{ trx.cashbox?.nama || '-' }}</span>
             </td>
             <td class="px-4 py-3 text-right font-semibold" :class="trx.jenis === 'pemasukan' ? 'text-green-600' : 'text-red-600'">
               {{ trx.jenis === 'pemasukan' ? '+' : '-' }} Rp {{ trx.jumlah.toLocaleString('id-ID') }}

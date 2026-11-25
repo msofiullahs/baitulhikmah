@@ -10,16 +10,17 @@ const props = defineProps({
   donations: Object,
   categories: Array,
   cashboxes: Array,
+  filters: Object,
 });
 
-const search = ref('');
-const kategoriFilter = ref('');
+const search = ref(props.filters?.search ?? '');
+const kategoriFilter = ref(Number(props.filters?.ziswaf_category_id) || '');
 const modalOpen = ref(false);
 const editMode = ref(false);
 const currentDonation = ref(null);
 
 const form = useForm({
-  jenis_ziswaf_id: '',
+  ziswaf_category_id: '',
   nama_donatur: '',
   no_hp_donatur: '',
   jumlah: '',
@@ -29,6 +30,24 @@ const form = useForm({
   is_anonymous: false,
   catatan: '',
 });
+
+const openEdit = (donation) => {
+  form.resetAndClearErrors();
+  currentDonation.value = donation;
+  editMode.value = true;
+  Object.assign(form, {
+    ziswaf_category_id: donation.ziswaf_category_id,
+    nama_donatur: donation.nama_donatur ?? '',
+    no_hp_donatur: donation.no_hp_donatur ?? '',
+    jumlah: donation.jumlah,
+    tanggal: donation.tanggal?.slice(0, 10) ?? '',
+    metode: donation.metode,
+    cashbox_id: donation.cashbox_id,
+    is_anonymous: donation.is_anonymous,
+    catatan: donation.catatan ?? '',
+  });
+  modalOpen.value = true;
+};
 
 const submit = () => {
   if (editMode.value && currentDonation.value) {
@@ -46,7 +65,7 @@ const closeModal = () => {
   modalOpen.value = false;
   editMode.value = false;
   currentDonation.value = null;
-  form.reset();
+  form.resetAndClearErrors();
 };
 
 const deleteItem = (item) => {
@@ -58,7 +77,7 @@ const deleteItem = (item) => {
 const filterDonations = () => {
   router.get(route('ziswaf.donations.index'), { 
     search: search.value, 
-    jenis_ziswaf_id: kategoriFilter.value 
+    ziswaf_category_id: kategoriFilter.value
   }, { preserveState: true });
 };
 
@@ -111,7 +130,7 @@ const ziswafLabel = (category) => {
           <CogIcon class="w-5 h-5" />
           Kelola Kategori
         </Link>
-        <button @click="modalOpen = true; editMode = false; form.reset()" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
+        <button @click="modalOpen = true; editMode = false; form.resetAndClearErrors()" class="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
           <PlusIcon class="w-5 h-5" /> Catat Donasi
         </button>
       </div>
@@ -160,6 +179,7 @@ const ziswafLabel = (category) => {
             <td class="px-6 py-4 text-center text-xs">{{ item.cashbox?.nama || '-' }}</td>
             <td class="px-6 py-4 text-center text-xs">{{ new Date(item.tanggal).toLocaleDateString('id-ID') }}</td>
             <td class="px-6 py-4 text-center">
+              <button @click="openEdit(item)" class="text-gray-400 hover:text-primary mx-1" title="Edit"><PencilIcon class="w-5 h-5 inline" /></button>
               <button @click="deleteItem(item)" class="text-gray-400 hover:text-red-600 mx-1" title="Hapus"><TrashIcon class="w-5 h-5 inline" /></button>
             </td>
           </tr>
@@ -178,11 +198,11 @@ const ziswafLabel = (category) => {
       <form @submit.prevent="submit" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Jenis ZISWAF <span class="text-red-500">*</span></label>
-          <select v-model="form.jenis_ziswaf_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+          <select v-model="form.ziswaf_category_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
             <option value="">Pilih Jenis</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ ziswafLabel(cat) }}</option>
           </select>
-          <span v-if="form.errors.jenis_ziswaf_id" class="text-red-500 text-xs">{{ form.errors.jenis_ziswaf_id }}</span>
+          <span v-if="form.errors.ziswaf_category_id" class="text-red-500 text-xs">{{ form.errors.ziswaf_category_id }}</span>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -228,6 +248,9 @@ const ziswafLabel = (category) => {
             <label class="block text-sm font-medium text-gray-700 mb-1">Kas Box Tujuan <span class="text-red-500">*</span></label>
             <select v-model="form.cashbox_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
               <option value="">Pilih Kas Box</option>
+              <option v-if="currentDonation?.cashbox && !cashboxes.some(box => box.id === currentDonation.cashbox_id)" :value="currentDonation.cashbox_id">
+                {{ currentDonation.cashbox.nama }}
+              </option>
               <option v-for="box in cashboxes" :key="box.id" :value="box.id">{{ box.nama }}</option>
             </select>
             <span v-if="form.errors.cashbox_id" class="text-red-500 text-xs">{{ form.errors.cashbox_id }}</span>

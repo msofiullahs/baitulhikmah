@@ -9,6 +9,7 @@ import { BuildingLibraryIcon, PrinterIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   assets: Object,
+  categories: Array,
   summary: Object,
   filters: Object,
 });
@@ -90,7 +91,7 @@ const printReport = () => {
       <div class="bg-white rounded-xl shadow-sm p-6">
         <h3 class="font-semibold text-gray-800 mb-4">Aset Berdasarkan Kategori</h3>
         <div class="space-y-3">
-          <div v-for="item in summary?.by_category" :key="item.kategori" class="flex items-center justify-between">
+          <div v-for="item in summary?.by_category" :key="item.category_id" class="flex items-center justify-between">
             <span class="text-gray-600 capitalize">{{ item.kategori }}</span>
             <div class="flex items-center gap-3">
               <div class="w-40 bg-gray-200 rounded-full h-2">
@@ -119,11 +120,7 @@ const printReport = () => {
           <label class="block text-xs font-medium text-gray-500 mb-1">Kategori</label>
           <select v-model="category" class="w-full text-sm border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
             <option value="all">Semua</option>
-            <option value="elektronik">Elektronik</option>
-            <option value="furniture">Furniture</option>
-            <option value="bangunan">Bangunan</option>
-            <option value="kendaraan">Kendaraan</option>
-            <option value="lainnya">Lainnya</option>
+            <option v-for="item in categories" :key="item.id" :value="String(item.id)">{{ item.nama }}</option>
           </select>
         </div>
       </div>
@@ -150,7 +147,7 @@ const printReport = () => {
             <td class="px-4 py-3 font-mono text-xs">{{ asset.kode_aset }}</td>
             <td class="px-4 py-3 font-medium">{{ asset.nama }}</td>
             <td class="px-4 py-3">
-              <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded capitalize">{{ asset.kategori }}</span>
+              <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded capitalize">{{ asset.category?.nama || '-' }}</span>
             </td>
             <td class="px-4 py-3">{{ asset.lokasi || '-' }}</td>
             <td class="px-4 py-3 text-center">

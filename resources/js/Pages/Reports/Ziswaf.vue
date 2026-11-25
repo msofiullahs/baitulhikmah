@@ -53,8 +53,7 @@ const printReport = () => {
         <div class="text-lg font-bold text-gray-800">Rp {{ (summary?.total || 0).toLocaleString('id-ID') }}</div>
       </div>
       <div v-for="item in summary?.by_type" :key="item.jenis" class="bg-white rounded-xl shadow-sm p-4 border-l-4" :class="{
-        'border-green-500': item.jenis === 'zakat_fitrah',
-        'border-blue-500': item.jenis === 'zakat_maal',
+        'border-green-500': item.jenis === 'zakat',
         'border-purple-500': item.jenis === 'infaq',
         'border-pink-500': item.jenis === 'sedekah',
         'border-indigo-500': item.jenis === 'wakaf'
@@ -96,8 +95,7 @@ const printReport = () => {
           <label class="block text-xs font-medium text-gray-500 mb-1">Jenis ZISWAF</label>
           <select v-model="type" class="w-full text-sm border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
             <option value="all">Semua</option>
-            <option value="zakat_fitrah">Zakat Fitrah</option>
-            <option value="zakat_maal">Zakat Maal</option>
+            <option value="zakat">Zakat</option>
             <option value="infaq">Infaq</option>
             <option value="sedekah">Sedekah</option>
             <option value="wakaf">Wakaf</option>
@@ -127,13 +125,12 @@ const printReport = () => {
             <td class="px-4 py-3">{{ new Date(donation.tanggal).toLocaleDateString('id-ID') }}</td>
             <td class="px-4 py-3">
               <span :class="{
-                'bg-green-100 text-green-800': donation.jenis === 'zakat_fitrah',
-                'bg-blue-100 text-blue-800': donation.jenis === 'zakat_maal',
-                'bg-purple-100 text-purple-800': donation.jenis === 'infaq',
-                'bg-pink-100 text-pink-800': donation.jenis === 'sedekah',
-                'bg-indigo-100 text-indigo-800': donation.jenis === 'wakaf'
+                'bg-green-100 text-green-800': donation.category?.kategori === 'zakat',
+                'bg-purple-100 text-purple-800': donation.category?.kategori === 'infaq',
+                'bg-pink-100 text-pink-800': donation.category?.kategori === 'sedekah',
+                'bg-indigo-100 text-indigo-800': donation.category?.kategori === 'wakaf'
               }" class="px-2 py-1 text-xs rounded capitalize">
-                {{ donation.jenis.replace('_', ' ') }}
+                {{ donation.category?.nama || '-' }}
               </span>
             </td>
             <td class="px-4 py-3">

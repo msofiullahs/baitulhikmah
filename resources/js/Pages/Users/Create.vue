@@ -1,109 +1,100 @@
 <script setup>
-import { ref } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PasswordInput from '@/Components/PasswordInput.vue';
 import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     roles: Array,
+    user: Object,
 });
 
-const showCreateModal = ref(false);
-
-const createForm = useForm({
-    name: '',
-    username: '',
-    email: '',
+const title = props.user ? 'Edit User' : 'Tambah User Baru';
+const form = useForm({
+    name: props.user?.name ?? '',
+    username: props.user?.username ?? '',
+    email: props.user?.email ?? '',
     password: '',
     password_confirmation: '',
-    role: '',
+    role: props.user?.roles[0]?.name ?? '',
+    is_active: props.user?.is_active ?? true,
 });
 
-const openCreateModal = () => {
-    createForm.reset();
-    createForm.role = '';
-    showCreateModal.value = true;
-};
-
-const submitCreate = () => {
-    createForm.post(route('users.store'), {
-        onSuccess: () => {
-            showCreateModal.value = false;
-            Swal.fire('Success', 'User berhasil ditambahkan', 'success');
-        },
-        onError: (errors) => {
-            Swal.fire('Error', Object.values(errors)[0], 'error');
-        },
-    });
+const submit = () => {
+    if (props.user) {
+        form.put(route('users.update', props.user.id));
+    } else {
+        form.post(route('users.store'));
+    }
 };
 </script>
 
 <template>
-    <Head title="Tambah User Baru" />
+    <Head :title="title" />
 
     <AdminLayout>
         <div class="py-6">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-6">
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Tambah User Baru</h1>
-                        <p class="text-sm text-gray-600 mt-1">Buat akun pengguna baru untuk sistem</p>
+                        <h1 class="text-2xl font-bold text-gray-900">{{ title }}</h1>
+
                     </div>
                 </div>
 
                 <div class="bg-white rounded-lg shadow p-6">
-                    <form @submit.prevent="submitCreate">
+                    <form @submit.prevent="submit">
                         <div class="space-y-4">
                             <div>
                                 <InputLabel for="name" value="Nama Lengkap" />
-                                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="createForm.name" required autofocus />
-                                <InputError :message="createForm.errors.name" class="mt-2" />
+                                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus />
+                                <InputError :message="form.errors.name" class="mt-2" />
                             </div>
 
                             <div>
                                 <InputLabel for="username" value="Username" />
-                                <TextInput id="username" type="text" class="mt-1 block w-full" v-model="createForm.username" required />
-                                <InputError :message="createForm.errors.username" class="mt-2" />
+                                <TextInput id="username" type="text" class="mt-1 block w-full" v-model="form.username" required />
+                                <InputError :message="form.errors.username" class="mt-2" />
                             </div>
 
                             <div>
                                 <InputLabel for="email" value="Email (Opsional)" />
-                                <TextInput id="email" type="email" class="mt-1 block w-full" v-model="createForm.email" />
-                                <InputError :message="createForm.errors.email" class="mt-2" />
+                                <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
+                                <InputError :message="form.errors.email" class="mt-2" />
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <InputLabel for="password" value="Password" />
-                                    <PasswordInput id="password" v-model="createForm.password" class="mt-1 block w-full" required />
-                                    <InputError :message="createForm.errors.password" class="mt-2" />
+                                    <InputLabel for="password" :value="user ? 'Password baru (opsional)' : 'Password'" />
+                                    <PasswordInput id="password" v-model="form.password" class="mt-1 block w-full" :required="!user" />
+                                    <InputError :message="form.errors.password" class="mt-2" />
                                 </div>
                                 <div>
                                     <InputLabel for="password_confirmation" value="Konfirmasi Password" />
-                                    <PasswordInput id="password_confirmation" v-model="createForm.password_confirmation" class="mt-1 block w-full" required />
+                                    <PasswordInput id="password_confirmation" v-model="form.password_confirmation" class="mt-1 block w-full" :required="!user" />
                                 </div>
                             </div>
 
                             <div>
                                 <InputLabel for="role" value="Role" />
-                                <select id="role" v-model="createForm.role" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                                <select id="role" v-model="form.role" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                                     <option value="">Pilih Role</option>
                                     <option v-for="role in roles" :key="role.id" :value="role.name">{{ role.name }}</option>
                                 </select>
-                                <InputError :message="createForm.errors.role" class="mt-2" />
+                                <InputError :message="form.errors.role" class="mt-2" />
                             </div>
+                            <label v-if="user" class="flex items-center gap-2 text-sm">
+                                <input v-model="form.is_active" type="checkbox" />
+                                Akun aktif
+                            </label>
                         </div>
 
                         <div class="mt-6 flex justify-end space-x-3">
-                            <SecondaryButton @click="$router.visit(route('users.index'))">Batal</SecondaryButton>
-                            <PrimaryButton :disabled="createForm.processing">Simpan</PrimaryButton>
+                            <Link :href="route('users.index')" class="rounded-md border px-4 py-2 text-sm font-semibold">Batal</Link>
+                            <PrimaryButton :disabled="form.processing">Simpan</PrimaryButton>
                         </div>
                     </form>
                 </div>

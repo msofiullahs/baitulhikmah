@@ -71,18 +71,18 @@ Route::middleware([
 ])->prefix('admin/')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('jamaah', JamaahController::class);
-    Route::resource('transactions', TransactionController::class);
-    Route::resource('assets', AssetController::class);
-    Route::resource('activities', ActivityController::class);
-    Route::resource('announcements', AnnouncementController::class);
+    Route::resource('jamaah', JamaahController::class)->except(['create', 'show', 'edit']);
+    Route::resource('transactions', TransactionController::class)->except(['create', 'show', 'edit']);
+    Route::resource('assets', AssetController::class)->except(['create', 'show', 'edit']);
+    Route::resource('activities', ActivityController::class)->except(['create', 'show', 'edit']);
+    Route::resource('announcements', AnnouncementController::class)->except(['create', 'show', 'edit']);
     
     // Undangan dengan route custom untuk generate PDF
-    Route::resource('invitations', InvitationController::class);
+    Route::resource('invitations', InvitationController::class)->except(['create', 'show', 'edit']);
     Route::get('invitations/{invitation}/pdf', [InvitationController::class, 'generatePdf'])->name('invitations.pdf');
     
     // Template Undangan
-    Route::resource('invitation-templates', InvitationTemplateController::class)->except(['show']);
+    Route::resource('invitation-templates', InvitationTemplateController::class)->except(['create', 'show', 'edit']);
     Route::post('invitation-templates/{invitationTemplate}/toggle-active', [InvitationTemplateController::class, 'toggleActive'])->name('invitation-templates.toggle-active');
 
     // Jumah (Khatib & Jadwal)
@@ -96,12 +96,19 @@ Route::middleware([
     // TPQ
     Route::get('tpq/students', [TpqController::class, 'studentsIndex'])->name('tpq.students.index');
     Route::post('tpq/students', [TpqController::class, 'storeStudent'])->name('tpq.students.store');
+    Route::put('tpq/students/{student}', [TpqController::class, 'updateStudent'])->name('tpq.students.update');
+    Route::delete('tpq/students/{student}', [TpqController::class, 'destroyStudent'])->name('tpq.students.destroy');
     Route::post('tpq/payments', [TpqController::class, 'storePayment'])->name('tpq.payments.store');
 
     // ZISWAF
     Route::get('ziswaf/donations', [ZiswafController::class, 'donationsIndex'])->name('ziswaf.donations.index');
     Route::post('ziswaf/donations', [ZiswafController::class, 'storeDonation'])->name('ziswaf.donations.store');
+    Route::put('ziswaf/donations/{donation}', [ZiswafController::class, 'updateDonation'])->name('ziswaf.donations.update');
+    Route::delete('ziswaf/donations/{donation}', [ZiswafController::class, 'destroyDonation'])->name('ziswaf.donations.destroy');
     Route::get('ziswaf/mustahiq', [ZiswafController::class, 'mustahiqIndex'])->name('ziswaf.mustahiq.index');
+    Route::post('ziswaf/mustahiq', [ZiswafController::class, 'storeMustahiq'])->name('mustahiq.store');
+    Route::put('ziswaf/mustahiq/{mustahiq}', [ZiswafController::class, 'updateMustahiq'])->name('mustahiq.update');
+    Route::delete('ziswaf/mustahiq/{mustahiq}', [ZiswafController::class, 'destroyMustahiq'])->name('mustahiq.destroy');
     Route::post('ziswaf/distributions', [ZiswafController::class, 'storeDistribution'])->name('ziswaf.distributions.store');
 
     // Route::get('reports', function () {
@@ -122,19 +129,20 @@ Route::middleware([
         Route::get('/settings/masjid', [SettingsController::class, 'masjid'])->name('settings.masjid');
         Route::post('/settings/masjid', [SettingsController::class, 'updateMasjid'])->name('settings.masjid.update');
         Route::get('/settings/social', [SettingsController::class, 'social'])->name('settings.social');
+        Route::post('/settings/social', [SettingsController::class, 'updateSocial'])->name('settings.social.update');
     });
 
     // Asset Category CRUD
-    Route::resource('asset-categories', App\Http\Controllers\AssetCategoryController::class);
+    Route::resource('asset-categories', App\Http\Controllers\AssetCategoryController::class)->except(['create', 'show', 'edit']);
     
     // Ziswaf Category CRUD
-    Route::resource('ziswaf-categories', App\Http\Controllers\ZiswafCategoryController::class);
+    Route::resource('ziswaf-categories', App\Http\Controllers\ZiswafCategoryController::class)->except(['create', 'show', 'edit']);
     
     // Transaction Category CRUD
-    Route::resource('transaction-categories', TransactionCategoryController::class);
+    Route::resource('transaction-categories', TransactionCategoryController::class)->except(['create', 'show', 'edit']);
 
     // Cashbox CRUD
-    Route::resource('cashboxes', CashboxController::class);
+    Route::resource('cashboxes', CashboxController::class)->except(['create', 'show', 'edit']);
 
     Route::middleware(['can:manage-roles'])->group(function () {
         Route::get('/roles', [RoleManagementController::class, 'roles'])->name('roles.index');
@@ -153,7 +161,7 @@ Route::middleware([
 
     // User Management (Ketua & Super Admin)
     Route::middleware(['can:manage-users'])->group(function () {
-        Route::resource('users', UserController::class);
+        Route::resource('users', UserController::class)->except(['show']);
     });
 
     // Reports

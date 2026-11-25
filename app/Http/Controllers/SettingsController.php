@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -12,6 +13,12 @@ use Throwable;
 
 class SettingsController extends Controller
 {
+    private const MOSQUE_LINKS = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'whatsapp_group', 'website'];
+
+    private const SOCIAL_FLAGS = ['enable_wa_broadcast', 'enable_email_broadcast', 'auto_post_facebook', 'auto_post_instagram'];
+
+    private const SOCIAL_SECRETS = ['fb_access_token', 'ig_access_token', 'yt_api_key'];
+
     public function index()
     {
         // Check permission inline
@@ -19,7 +26,7 @@ class SettingsController extends Controller
             abort(403);
         }
         
-        $settings = Setting::all()->groupBy('group');
+        $settings = Setting::whereNotIn('key', [...self::SOCIAL_SECRETS, ...array_map(fn ($key) => 'social.'.$key, self::SOCIAL_SECRETS)])->get()->groupBy('group');
         
         return Inertia::render('Settings/Index', [
             'settings' => $settings->map(fn($items) => $items->map(fn($item) => [
@@ -215,8 +222,44 @@ class SettingsController extends Controller
 
     public function social()
     {
+        $settings = array_intersect_key(Setting::groupValues('social'), array_flip([
+            'telegram', 'linkedin', 'google_maps', ...self::SOCIAL_FLAGS,
+        ]));
+
+        foreach (self::SOCIAL_FLAGS as $flag) {
+            $settings[$flag] = filter_var($settings[$flag] ?? false, FILTER_VALIDATE_BOOLEAN);
+        }
+
         return Inertia::render('Settings/Social', [
-            'settings' => Setting::group('social'),
+            'settings' => array_replace(
+                $settings,
+                array_intersect_key(Setting::mosqueProfile(), array_flip(self::MOSQUE_LINKS)),
+            ),
         ]);
+    }
+
+    public function updateSocial(Request $request)
+    {
+        $links = array_fill_keys([...self::MOSQUE_LINKS, 'telegram', 'linkedin', 'google_maps'], 'nullable|url:http,https|max:2048');
+        $flags = array_fill_keys(self::SOCIAL_FLAGS, 'boolean');
+        $secrets = array_fill_keys(self::SOCIAL_SECRETS, 'nullable|string|max:4096');
+        $validated = $request->validate($links + $flags + $secrets);
+
+        DB::transaction(function () use ($validated) {
+            foreach ($validated as $key => $value) {
+                if (in_array($key, self::SOCIAL_SECRETS, true)) {
+                    if ($value === null) {
+                        continue;
+                    }
+
+                    $value = Crypt::encryptString($value);
+                }
+
+                $group = in_array($key, self::MOSQUE_LINKS, true) ? 'masjid' : 'social';
+                Setting::set("$group.$key", $value, $group);
+            }
+        });
+
+        return back()->with('success', 'Pengaturan media sosial berhasil disimpan.');
     }
 }
