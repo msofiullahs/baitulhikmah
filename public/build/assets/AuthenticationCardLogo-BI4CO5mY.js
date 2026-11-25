@@ -1,1 +1,0 @@
-import{B as e,J as t,M as n,n as r,v as i,y as a}from"./app-CplxfXoB.js";var o={__name:`AuthenticationCardLogo`,setup(o){return(o,s)=>(n(),a(t(r),{href:`/`},{default:e(()=>[...s[0]||=[i(`img`,{src:`/assets/logo-1.png`,width:`200`},null,-1)]]),_:1}))}};export{o as t};

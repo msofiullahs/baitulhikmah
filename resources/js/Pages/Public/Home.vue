@@ -1,11 +1,10 @@
 <script setup>
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ClockIcon, MapPinIcon, PhoneIcon, CalendarIcon, MegaphoneIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps({
-  masjid_profile: Object,
   jadwal_sholat: Object,
   announcements: Array,
   upcoming_activities: Array,
@@ -16,25 +15,28 @@ const props = defineProps({
 const formatRupiah = (num) => 'Rp ' + Number(num).toLocaleString('id-ID');
 
 // Hero image slider
-const heroSlides = [
+const page = usePage();
+const profile = computed(() => page.props.mosqueProfile);
+const heroSlides = computed(() => [
   { src: '/assets/logo-nu.svg', alt: 'Logo NU' },
-  { src: '/assets/mbh-original.png', alt: 'Logo Masjid Baitul Hikmah' },
-];
+  { src: profile.value.logo_url || '/assets/mbh-original.png', alt: profile.value.nama_masjid },
+]);
 const currentSlide = ref(0);
 let slideTimer = null;
 
 const nextSlide = () => {
-  currentSlide.value = (currentSlide.value + 1) % heroSlides.length;
+  currentSlide.value = (currentSlide.value + 1) % heroSlides.value.length;
 };
 const prevSlide = () => {
-  currentSlide.value = (currentSlide.value - 1 + heroSlides.length) % heroSlides.length;
+  currentSlide.value = (currentSlide.value - 1 + heroSlides.value.length) % heroSlides.value.length;
 };
 const goToSlide = (index) => {
   currentSlide.value = index;
   restartSlider();
 };
+const pauseSlider = () => clearInterval(slideTimer);
 const restartSlider = () => {
-  clearInterval(slideTimer);
+  pauseSlider();
   slideTimer = setInterval(nextSlide, 4000);
 };
 
@@ -54,31 +56,34 @@ const sholatTimes = [
 
 <template>
   <PublicLayout>
-    <Head title="Beranda - Baitul Hikmah" />
+    <Head title="Beranda" />
 
     <!-- Hero Section - HIJAU TUA dengan pattern -->
-    <section class="bg-[#0d5c3e] text-white py-20 relative overflow-hidden">
+    <section class="bg-[#0d5c3e] text-white pt-10 pb-16 sm:pt-14 sm:pb-20 lg:py-20 relative overflow-hidden">
       <!-- Pattern Background -->
       <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 60 60\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
       
-      <div class="grid grid-cols-2 max-w-7xl mx-auto px-4 relative justify-items-stretch">
-        <div class="max-w-3xl">
-          <h1 class="text-5xl font-bold mb-4 leading-tight">Selamat Datang di<br>Masjid Baitul Hikmah</h1>
-          <p class="text-xl opacity-90 mb-8 flex items-center gap-2">
-            <MapPinIcon class="w-5 h-5" /> {{ masjid_profile.alamat }}
+      <div class="grid max-w-7xl mx-auto px-4 sm:px-6 relative items-center gap-6 md:grid-cols-2 md:gap-8">
+        <div class="min-w-0 max-w-3xl text-center md:text-left">
+          <h1 class="mb-3 break-words text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+            Selamat Datang di <span class="block">{{ profile.nama_masjid }}</span>
+          </h1>
+          <p v-if="profile.alamat" class="mb-6 flex items-start justify-center gap-2 text-base opacity-90 md:justify-start lg:mb-8 lg:text-xl">
+            <MapPinIcon class="mt-0.5 h-5 w-5 shrink-0" />
+            <span class="min-w-0 break-words">{{ profile.alamat }}</span>
           </p>
-          <div class="flex flex-wrap gap-3">
-            <Link :href="route('public.schedule.pengajian')" class="bg-[#c9a96e] text-[#0d5c3e] px-6 py-3 rounded-lg font-semibold hover:bg-[#b8944f] transition shadow-lg">
+          <div class="flex flex-wrap justify-center gap-2 sm:gap-3 md:justify-start">
+            <Link :href="route('public.schedule.pengajian')" class="bg-[#c9a96e] text-[#0d5c3e] px-3 py-3 text-sm sm:px-6 sm:text-base rounded-lg font-semibold hover:bg-[#b8944f] transition shadow-lg">
               Lihat Jadwal
             </Link>
-            <Link :href="route('public.finance')" class="bg-white/10 backdrop-blur border-2 border-white/30 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition">
+            <Link :href="route('public.finance')" class="bg-white/10 backdrop-blur border-2 border-white/30 text-white px-3 py-3 text-sm sm:px-6 sm:text-base rounded-lg font-semibold hover:bg-white/20 transition">
               Laporan Keuangan
             </Link>
           </div>
         </div>
-        <div class="justify-items-center md:justify-items-end">
+        <div class="flex min-w-0 justify-center md:justify-end">
           <!-- Image Slider -->
-          <div class="relative w-full max-w-sm group" @mouseenter="clearInterval(slideTimer)" @mouseleave="restartSlider()">
+          <div class="relative w-full max-w-[16rem] sm:max-w-xs md:max-w-sm group" @mouseenter="pauseSlider" @mouseleave="restartSlider()">
             <div class="relative overflow-hidden aspect-video">
               <transition-group name="hero-slide">
                 <img
@@ -87,7 +92,7 @@ const sholatTimes = [
                   v-show="currentSlide === index"
                   :src="slide.src"
                   :alt="slide.alt"
-                  class="hero-slide-image absolute inset-0 w-full h-full object-contain p-6"
+                  class="hero-slide-image absolute inset-0 w-full h-full object-contain p-3 md:p-6"
                 />
               </transition-group>
 
@@ -96,7 +101,7 @@ const sholatTimes = [
                 type="button"
                 aria-label="Sebelumnya"
                 @click="prevSlide()"
-                class="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-black/30 text-white opacity-0 group-hover:opacity-100 hover:bg-black/50 transition"
+                class="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-black/30 text-white md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 hover:bg-black/50 transition"
               >
                 <ChevronLeftIcon class="w-5 h-5" />
               </button>
@@ -104,23 +109,28 @@ const sholatTimes = [
                 type="button"
                 aria-label="Berikutnya"
                 @click="goToSlide((currentSlide + 1) % heroSlides.length)"
-                class="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-black/30 text-white opacity-0 group-hover:opacity-100 hover:bg-black/50 transition"
+                class="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-black/30 text-white md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 hover:bg-black/50 transition"
               >
                 <ChevronRightIcon class="w-5 h-5" />
               </button>
             </div>
 
             <!-- Dots -->
-            <div class="flex justify-center gap-2 mt-4">
+            <div class="flex justify-center gap-1 md:mt-2">
               <button
                 v-for="(slide, index) in heroSlides"
                 :key="'dot-' + slide.src"
                 type="button"
                 :aria-label="'Slide ' + (index + 1)"
                 @click="goToSlide(index)"
-                class="h-2.5 rounded-full transition-all"
-                :class="currentSlide === index ? 'w-8 bg-[#c9a96e]' : 'w-2.5 bg-white/40 hover:bg-white/70'"
-              ></button>
+                :aria-pressed="currentSlide === index"
+                class="grid h-11 w-11 place-items-center"
+              >
+                <span
+                  class="h-2.5 rounded-full transition-all"
+                  :class="currentSlide === index ? 'w-8 bg-[#c9a96e]' : 'w-2.5 bg-white/40 hover:bg-white/70'"
+                ></span>
+              </button>
             </div>
           </div>
         </div>
@@ -129,16 +139,16 @@ const sholatTimes = [
 
     <!-- Jadwal Sholat Hari Ini -->
     <section v-if="jadwal_sholat" class="max-w-7xl mx-auto px-4 -mt-12 relative z-10">
-      <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100">
+      <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 border border-gray-100">
         <div class="flex items-center gap-3 mb-6">
           <ClockIcon class="w-6 h-6 text-[#0d5c3e]" />
           <h2 class="text-xl font-bold text-gray-800">Jadwal Sholat Hari Ini</h2>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div v-for="sholat in sholatTimes" :key="sholat.key" class="text-center p-4 bg-gradient-to-br from-[#0d5c3e]/5 to-[#0d5c3e]/10 rounded-xl border border-[#0d5c3e]/10">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-4">
+          <div v-for="sholat in sholatTimes" :key="sholat.key" class="min-w-0 text-center p-2 sm:p-4 bg-gradient-to-br from-[#0d5c3e]/5 to-[#0d5c3e]/10 rounded-xl border border-[#0d5c3e]/10">
             <div class="text-2xl mb-2">{{ sholat.icon }}</div>
             <p class="text-sm text-gray-600 font-medium">{{ sholat.name }}</p>
-            <p class="text-2xl font-bold text-[#0d5c3e] mt-1">{{ jadwal_sholat[sholat.key] }}</p>
+            <p class="break-words text-lg sm:text-2xl font-bold text-[#0d5c3e] mt-1">{{ jadwal_sholat[sholat.key] }}</p>
           </div>
         </div>
       </div>
@@ -151,13 +161,13 @@ const sholatTimes = [
         <p class="text-gray-500 mt-2">Laporan {{ finance_highlight.bulan }}</p>
       </div>
       <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        <div class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-[#0d5c3e]">
+        <div class="min-w-0 bg-white p-5 sm:p-8 rounded-2xl shadow-md border-t-4 border-[#0d5c3e]">
           <p class="text-gray-500 text-sm font-medium">Total Pemasukan</p>
-          <p class="text-4xl font-bold text-[#0d5c3e] mt-2">{{ formatRupiah(finance_highlight.total_pemasukan) }}</p>
+          <p class="break-words text-2xl sm:text-4xl font-bold text-[#0d5c3e] mt-2">{{ formatRupiah(finance_highlight.total_pemasukan) }}</p>
         </div>
-        <div class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-[#c9a96e]">
+        <div class="min-w-0 bg-white p-5 sm:p-8 rounded-2xl shadow-md border-t-4 border-[#c9a96e]">
           <p class="text-gray-500 text-sm font-medium">Total Pengeluaran</p>
-          <p class="text-4xl font-bold text-[#c9a96e] mt-2">{{ formatRupiah(finance_highlight.total_pengeluaran) }}</p>
+          <p class="break-words text-2xl sm:text-4xl font-bold text-[#c9a96e] mt-2">{{ formatRupiah(finance_highlight.total_pengeluaran) }}</p>
         </div>
       </div>
       <div class="text-center mt-8">
@@ -170,7 +180,7 @@ const sholatTimes = [
     <!-- Kegiatan Mendatang -->
     <section class="bg-gray-100 py-16">
       <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mb-8">
           <div class="flex items-center gap-3">
             <CalendarIcon class="w-6 h-6 text-[#0d5c3e]" />
             <h2 class="text-2xl font-bold text-gray-800">Kegiatan Mendatang</h2>
@@ -220,7 +230,7 @@ const sholatTimes = [
 
     <!-- Pengumuman -->
     <section class="max-w-7xl mx-auto px-4 pb-16">
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mb-8">
         <div class="flex items-center gap-3">
           <MegaphoneIcon class="w-6 h-6 text-[#0d5c3e]" />
           <h2 class="text-2xl font-bold text-gray-800">Pengumuman Terbaru</h2>

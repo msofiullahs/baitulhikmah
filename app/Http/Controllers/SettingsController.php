@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Throwable;
 
 class SettingsController extends Controller
 {
@@ -46,32 +50,23 @@ class SettingsController extends Controller
     public function general()
     {
         return Inertia::render('Settings/General', [
-            'settings' => Setting::group('general'),
+            'settings' => array_intersect_key(Setting::groupValues('general'), array_flip(['kop_surat', 'kota_sholat', 'warna_tema'])),
         ]);
     }
 
     public function updateGeneral(Request $request)
     {
         $validated = $request->validate([
-            'nama_masjid' => 'required|string|max:255',
-            'nama_tamir' => 'nullable|string|max:255',
-            'alamat' => 'required|string',
-            'kota' => 'required|string|max:255',
-            'provinsi' => 'required|string|max:255',
-            'kode_pos' => 'nullable|string|max:20',
-            'no_telepon' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'logo_url' => 'nullable|string',
-            'kop_surat' => 'nullable|string',
+            'kop_surat' => 'nullable|string|max:10000',
             'kota_sholat' => 'nullable|string|max:255',
-            'latitude' => 'nullable|string|max:50',
-            'longitude' => 'nullable|string|max:50',
-            'warna_tema' => 'nullable|string|max:20',
+            'warna_tema' => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
-        foreach ($validated as $key => $value) {
-            Setting::set("general.{$key}", $value);
-        }
+        DB::transaction(function () use ($validated) {
+            foreach ($validated as $key => $value) {
+                Setting::set("general.{$key}", $value);
+            }
+        });
 
         return back()->with('success', 'Pengaturan umum berhasil disimpan.');
     }
@@ -149,8 +144,73 @@ class SettingsController extends Controller
     public function masjid()
     {
         return Inertia::render('Settings/Masjid', [
-            'settings' => Setting::group('masjid'),
+            'settings' => Setting::mosqueProfile(),
         ]);
+    }
+
+    public function updateMasjid(Request $request)
+    {
+        $link = 'nullable|url:http,https|max:2048';
+        $image = 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048';
+        $validated = $request->validate([
+            'nama_masjid' => 'required|string|max:255',
+            'nama_tamir' => 'nullable|string|max:255',
+            'sejarah' => 'nullable|string|max:10000',
+            'alamat' => 'required|string|max:2000',
+            'kelurahan' => 'nullable|string|max:255',
+            'kecamatan' => 'nullable|string|max:255',
+            'kota' => 'required|string|max:255',
+            'provinsi' => 'required|string|max:255',
+            'kode_pos' => 'nullable|string|max:20',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
+            'no_telepon' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'website' => $link,
+            'facebook' => $link,
+            'instagram' => $link,
+            'twitter' => $link,
+            'youtube' => $link,
+            'tiktok' => $link,
+            'whatsapp_group' => $link,
+            'logo' => $image,
+            'foto' => $image,
+            'jam_buka' => 'nullable|date_format:H:i',
+            'jam_tutup' => 'nullable|date_format:H:i',
+        ]);
+
+        $disk = Storage::disk('public');
+        $uploads = [];
+
+        try {
+            foreach (['logo', 'foto'] as $field) {
+                unset($validated[$field]);
+
+                if ($request->hasFile($field)) {
+                    $path = $request->file($field)->store('masjid', 'public');
+
+                    if ($path === false) {
+                        throw ValidationException::withMessages([$field => 'Gambar gagal diunggah.']);
+                    }
+
+                    $uploads[] = $path;
+                    $validated[$field.'_url'] = '/storage/'.$path;
+                }
+            }
+
+            DB::transaction(function () use ($validated) {
+                foreach ($validated as $key => $value) {
+                    Setting::set("masjid.{$key}", $value, 'masjid');
+                }
+            });
+        } catch (Throwable $exception) {
+            if ($uploads !== []) {
+                $disk->delete($uploads);
+            }
+            throw $exception;
+        }
+
+        return back()->with('success', 'Profil masjid berhasil disimpan.');
     }
 
     public function social()

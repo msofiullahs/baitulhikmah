@@ -1,14 +1,15 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon } from '@heroicons/vue/24/outline';
 
-const props = defineProps({
-  contact_info: Object,
-  social_media: Object,
+defineProps({
   pengurus: Array,
 });
+
+const page = usePage();
+const profile = computed(() => page.props.mosqueProfile);
 
 const form = useForm({
   nama: '',
@@ -28,7 +29,7 @@ const submitContact = () => {
 
 <template>
   <PublicLayout>
-    <Head title="Kontak Kami - Baitul Hikmah" />
+    <Head title="Kontak Kami" />
 
     <!-- Hero Section -->
     <section class="bg-gradient-to-br from-primary to-primary-light text-white py-16">
@@ -43,7 +44,7 @@ const submitContact = () => {
       <div class="grid md:grid-cols-2 gap-8">
         
         <!-- Contact Information -->
-        <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="min-w-0 bg-white rounded-xl shadow-lg p-5 sm:p-8">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Informasi Kontak</h2>
           
           <div class="space-y-6">
@@ -53,7 +54,7 @@ const submitContact = () => {
               </div>
               <div>
                 <h3 class="font-semibold text-gray-800 mb-1">Alamat</h3>
-                <p class="text-gray-600">{{ contact_info?.alamat || '-' }}</p>
+                <p class="text-gray-600 [overflow-wrap:anywhere]">{{ profile.alamat || '-' }}</p>
               </div>
             </div>
 
@@ -63,7 +64,7 @@ const submitContact = () => {
               </div>
               <div>
                 <h3 class="font-semibold text-gray-800 mb-1">Telepon / WhatsApp</h3>
-                <p class="text-gray-600">{{ contact_info?.no_hp || '-' }}</p>
+                <p class="text-gray-600 [overflow-wrap:anywhere]">{{ profile.no_telepon || '-' }}</p>
               </div>
             </div>
 
@@ -73,7 +74,7 @@ const submitContact = () => {
               </div>
               <div>
                 <h3 class="font-semibold text-gray-800 mb-1">Email</h3>
-                <p class="text-gray-600">{{ contact_info?.email || '-' }}</p>
+                <p class="text-gray-600 [overflow-wrap:anywhere]">{{ profile.email || '-' }}</p>
               </div>
             </div>
           </div>
@@ -96,16 +97,16 @@ const submitContact = () => {
           <div class="mt-8 pt-8 border-t">
             <h3 class="font-semibold text-gray-800 mb-4">Ikuti Kami di Media Sosial</h3>
             <div class="flex gap-3">
-              <a v-if="social_media?.facebook" :href="social_media.facebook" target="_blank" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-light transition">FB</a>
-              <a v-if="social_media?.instagram" :href="social_media.instagram" target="_blank" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-light transition">IG</a>
-              <a v-if="social_media?.youtube" :href="social_media.youtube" target="_blank" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-light transition">YT</a>
-              <a v-if="social_media?.tiktok" :href="social_media.tiktok" target="_blank" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-light transition">TT</a>
+              <a v-if="profile.facebook" :href="profile.facebook" target="_blank" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-light transition">FB</a>
+              <a v-if="profile.instagram" :href="profile.instagram" target="_blank" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-light transition">IG</a>
+              <a v-if="profile.youtube" :href="profile.youtube" target="_blank" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-light transition">YT</a>
+              <a v-if="profile.tiktok" :href="profile.tiktok" target="_blank" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-light transition">TT</a>
             </div>
           </div>
         </div>
 
         <!-- Contact Form -->
-        <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="min-w-0 bg-white rounded-xl shadow-lg p-5 sm:p-8">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Kirim Pesan</h2>
           
           <form @submit.prevent="submitContact" class="space-y-4">

@@ -120,6 +120,7 @@ Route::middleware([
         Route::post('/settings/finance/payment', [SettingsController::class, 'savePayment'])->name('settings.finance.payment');
         Route::post('/settings/finance/whatsapp', [SettingsController::class, 'saveWhatsApp'])->name('settings.finance.whatsapp');
         Route::get('/settings/masjid', [SettingsController::class, 'masjid'])->name('settings.masjid');
+        Route::post('/settings/masjid', [SettingsController::class, 'updateMasjid'])->name('settings.masjid.update');
         Route::get('/settings/social', [SettingsController::class, 'social'])->name('settings.social');
     });
 

@@ -17,7 +17,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-lg">Umum</h3>
-                            <p class="text-sm text-gray-600">Nama masjid, alamat, logo, kop surat</p>
+                            <p class="text-sm text-gray-600">Kop surat, jadwal sholat, warna tema</p>
                         </div>
                     </div>
                 </a>

@@ -70,7 +70,7 @@ const pengeluaranChart = computed(() => ({
     <div class="max-w-7xl mx-auto px-4 -mt-8">
       <!-- Filter -->
       <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
-        <div class="flex flex-col md:flex-row gap-4 items-end">
+        <div class="flex flex-col md:flex-row gap-4 md:items-end">
           <div class="flex-1">
             <label class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
             <select v-model="selectedYear" @change="applyFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0d5c3e] outline-none">
@@ -84,7 +84,7 @@ const pengeluaranChart = computed(() => ({
               <option v-for="(name, idx) in filters.months" :key="idx" :value="parseInt(idx)">{{ name }}</option>
             </select>
           </div>
-          <Link :href="route('public.finance.download', { year: selectedYear, month: selectedMonth })" class="bg-[#c9a96e] text-[#0d5c3e] px-6 py-2 rounded-lg font-semibold hover:bg-[#b8944f] transition flex items-center gap-2">
+          <Link :href="route('public.finance.download', { year: selectedYear, month: selectedMonth })" class="bg-[#c9a96e] text-[#0d5c3e] px-6 py-2 rounded-lg font-semibold hover:bg-[#b8944f] transition flex items-center justify-center gap-2">
             <ArrowDownTrayIcon class="w-5 h-5" /> Download PDF
           </Link>
         </div>
@@ -94,21 +94,21 @@ const pengeluaranChart = computed(() => ({
       <div class="grid md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[#0d5c3e]">
           <p class="text-sm text-gray-500">Total Pemasukan</p>
-          <p class="text-3xl font-bold text-[#0d5c3e] mt-1">{{ formatRupiah(stats.total_pemasukan) }}</p>
+          <p class="break-words text-2xl sm:text-3xl font-bold text-[#0d5c3e] mt-1">{{ formatRupiah(stats.total_pemasukan) }}</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[#c9a96e]">
           <p class="text-sm text-gray-500">Total Pengeluaran</p>
-          <p class="text-3xl font-bold text-[#c9a96e] mt-1">{{ formatRupiah(stats.total_pengeluaran) }}</p>
+          <p class="break-words text-2xl sm:text-3xl font-bold text-[#c9a96e] mt-1">{{ formatRupiah(stats.total_pengeluaran) }}</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-gray-600">
           <p class="text-sm text-gray-500">Saldo</p>
-          <p class="text-3xl font-bold text-gray-700 mt-1">{{ formatRupiah(stats.saldo) }}</p>
+          <p class="break-words text-2xl sm:text-3xl font-bold text-gray-700 mt-1">{{ formatRupiah(stats.saldo) }}</p>
         </div>
       </div>
 
       <!-- Charts -->
       <div class="grid lg:grid-cols-3 gap-6 mb-8">
-        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="min-w-0 lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <h2 class="font-bold text-lg mb-4 text-gray-800">Grafik Bulanan {{ stats.tahun }}</h2>
           <div class="h-80">
             <Bar :data="barChartData" :options="chartOptions" />

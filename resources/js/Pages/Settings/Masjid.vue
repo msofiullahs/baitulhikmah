@@ -148,16 +148,16 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Logo Masjid</label>
                             <div class="mt-1">
-                                <img v-if="form.logo_url" :src="form.logo_url" alt="Logo" class="h-20 w-20 object-contain mb-2"/>
-                                <input type="file" @change="handleLogoUpload" accept="image/*" 
+                                <img v-if="settings.logo_url" :src="settings.logo_url" alt="Logo" class="h-20 w-20 object-contain mb-2"/>
+                                <input ref="logoInput" type="file" @change="form.logo = $event.target.files[0] ?? null" accept="image/jpeg,image/png,image/webp"
                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Foto Masjid</label>
                             <div class="mt-1">
-                                <img v-if="form.foto_url" :src="form.foto_url" alt="Foto Masjid" class="h-20 w-32 object-cover mb-2"/>
-                                <input type="file" @change="handleFotoUpload" accept="image/*" 
+                                <img v-if="settings.foto_url" :src="settings.foto_url" alt="Foto Masjid" class="h-20 w-32 object-cover mb-2"/>
+                                <input ref="fotoInput" type="file" @change="form.foto = $event.target.files[0] ?? null" accept="image/jpeg,image/png,image/webp"
                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
                             </div>
                         </div>
@@ -181,10 +181,17 @@
                     </div>
                 </div>
 
+                <p v-if="$page.props.flash?.success" role="status" class="text-sm text-green-700">
+                    {{ $page.props.flash.success }}
+                </p>
+                <ul v-if="form.hasErrors" role="alert" class="list-disc space-y-1 pl-5 text-sm text-red-700">
+                    <li v-for="(error, field) in form.errors" :key="field">{{ error }}</li>
+                </ul>
+
                 <!-- Actions -->
                 <div class="flex justify-end space-x-3 pt-6 border-t">
                     <button type="button" @click="resetForm" class="btn-secondary">Reset</button>
-                    <button type="submit" class="btn-primary">Simpan Profil Masjid</button>
+                    <button type="submit" :disabled="form.processing" class="btn-primary disabled:opacity-50">Simpan Profil Masjid</button>
                 </div>
             </form>
         </div>
@@ -193,88 +200,58 @@
 
 <script setup>
 import { ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 const props = defineProps({
     settings: Object,
 });
 
-const form = ref({
-    nama_masjid: props.settings?.nama_masjid || '',
-    nama_tamir: props.settings?.nama_tamir || '',
-    sejarah: props.settings?.sejarah || '',
-    alamat: props.settings?.alamat || '',
-    kelurahan: props.settings?.kelurahan || '',
-    kecamatan: props.settings?.kecamatan || '',
-    kota: props.settings?.kota || '',
-    provinsi: props.settings?.provinsi || '',
-    kode_pos: props.settings?.kode_pos || '',
-    latitude: props.settings?.latitude || '',
-    longitude: props.settings?.longitude || '',
-    no_telepon: props.settings?.no_telepon || '',
-    email: props.settings?.email || '',
-    website: props.settings?.website || '',
-    facebook: props.settings?.facebook || '',
-    instagram: props.settings?.instagram || '',
-    twitter: props.settings?.twitter || '',
-    youtube: props.settings?.youtube || '',
-    tiktok: props.settings?.tiktok || '',
-    whatsapp_group: props.settings?.whatsapp_group || '',
-    logo_url: props.settings?.logo_url || '',
-    foto_url: props.settings?.foto_url || '',
-    jam_buka: props.settings?.jam_buka || '04:00',
-    jam_tutup: props.settings?.jam_tutup || '22:00',
+const logoInput = ref(null);
+const fotoInput = ref(null);
+
+const form = useForm({
+    nama_masjid: props.settings.nama_masjid ?? '',
+    nama_tamir: props.settings.nama_tamir ?? '',
+    sejarah: props.settings.sejarah ?? '',
+    alamat: props.settings.alamat ?? '',
+    kelurahan: props.settings.kelurahan ?? '',
+    kecamatan: props.settings.kecamatan ?? '',
+    kota: props.settings.kota ?? '',
+    provinsi: props.settings.provinsi ?? '',
+    kode_pos: props.settings.kode_pos ?? '',
+    latitude: props.settings.latitude ?? '',
+    longitude: props.settings.longitude ?? '',
+    no_telepon: props.settings.no_telepon ?? '',
+    email: props.settings.email ?? '',
+    website: props.settings.website ?? '',
+    facebook: props.settings.facebook ?? '',
+    instagram: props.settings.instagram ?? '',
+    twitter: props.settings.twitter ?? '',
+    youtube: props.settings.youtube ?? '',
+    tiktok: props.settings.tiktok ?? '',
+    whatsapp_group: props.settings.whatsapp_group ?? '',
+    logo: null,
+    foto: null,
+    jam_buka: props.settings.jam_buka ?? '',
+    jam_tutup: props.settings.jam_tutup ?? '',
 });
 
-const handleLogoUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        console.log('Logo uploaded:', file.name);
-    }
-};
-
-const handleFotoUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        console.log('Foto uploaded:', file.name);
-    }
+const resetForm = () => {
+    form.resetAndClearErrors();
+    logoInput.value.value = '';
+    fotoInput.value.value = '';
 };
 
 const submitForm = () => {
-    router.post(route('settings.masjid.update'), form.value, {
+    form.post(route('settings.masjid.update'), {
+        preserveScroll: true,
         onSuccess: () => {
-            // Show success message
+            form.logo = null;
+            form.foto = null;
+            form.defaults();
+            resetForm();
         },
     });
-};
-
-const resetForm = () => {
-    form.value = {
-        nama_masjid: props.settings?.nama_masjid || '',
-        nama_tamir: props.settings?.nama_tamir || '',
-        sejarah: props.settings?.sejarah || '',
-        alamat: props.settings?.alamat || '',
-        kelurahan: props.settings?.kelurahan || '',
-        kecamatan: props.settings?.kecamatan || '',
-        kota: props.settings?.kota || '',
-        provinsi: props.settings?.provinsi || '',
-        kode_pos: props.settings?.kode_pos || '',
-        latitude: props.settings?.latitude || '',
-        longitude: props.settings?.longitude || '',
-        no_telepon: props.settings?.no_telepon || '',
-        email: props.settings?.email || '',
-        website: props.settings?.website || '',
-        facebook: props.settings?.facebook || '',
-        instagram: props.settings?.instagram || '',
-        twitter: props.settings?.twitter || '',
-        youtube: props.settings?.youtube || '',
-        tiktok: props.settings?.tiktok || '',
-        whatsapp_group: props.settings?.whatsapp_group || '',
-        logo_url: props.settings?.logo_url || '',
-        foto_url: props.settings?.foto_url || '',
-        jam_buka: props.settings?.jam_buka || '04:00',
-        jam_tutup: props.settings?.jam_tutup || '22:00',
-    };
 };
 </script>

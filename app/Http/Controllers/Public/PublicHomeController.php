@@ -8,7 +8,6 @@ use App\Models\Activity;
 use App\Models\JumahSchedule;
 use App\Models\SholatSchedule;
 use App\Models\Transaction;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -19,17 +18,6 @@ class PublicHomeController extends Controller
         $today = Carbon::today();
 
         return Inertia::render('Public/Home', [
-            // Profil Masjid (bisa dari settings table atau hardcode)
-            'masjid_profile' => [
-                'nama' => config('app.name', 'Masjid Baitul Hikmah'),
-                'alamat' => config('masjid.alamat', 'Jl. Contoh No. 123'),
-                'no_hp' => config('masjid.no_hp', '08123456789'),
-                'email' => config('masjid.email', 'info@baitulhikmah.id'),
-                'facebook' => config('masjid.facebook'),
-                'instagram' => config('masjid.instagram'),
-                'youtube' => config('masjid.youtube'),
-            ],
-
             // Jadwal Sholat Hari Ini
             'jadwal_sholat' => SholatSchedule::where('tanggal', $today)->first(),
 

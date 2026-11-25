@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -29,6 +30,12 @@ class HandleInertiaRequests extends Middleware
                     ]),
                 ] : null,
             ],
+            ...($request->routeIs('public.*') ? [
+                'mosqueProfile' => fn () => array_intersect_key(Setting::mosqueProfile(), array_flip([
+                    'nama_masjid', 'alamat', 'no_telepon', 'email', 'logo_url',
+                    'facebook', 'instagram', 'youtube', 'tiktok',
+                ])),
+            ] : []),
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
