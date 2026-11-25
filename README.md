@@ -7,6 +7,39 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Deploy Baitul Hikmah from GitHub to Plesk
+
+Plesk serves the compiled Vue assets committed under `public/build`. Node 16.20.2 on Plesk can stay as-is. Build assets on a workstation with Node 22.12 or newer in the Node 22 release line and PHP 8.3 or 8.4.
+
+### Prepare each release
+
+From the repository root, with the application's Composer dependencies installed:
+
+```sh
+composer install
+npm ci --include=dev
+VITE_APP_NAME="Baitul Hikmah" npm run build:plesk
+git add -A public/build
+```
+
+Commit the source changes and all changes under `public/build` together, including removed hashed files, then push to the GitHub branch configured in Plesk. Composer is needed before the build because the frontend imports Ziggy from `vendor`. Build with the production display name if it differs from the example.
+
+### Configure Plesk once
+
+1. Connect the GitHub repository in Laravel Toolkit and select the deployment branch. Set the domain document root to the application's `public` directory and select PHP 8.3 or 8.4.
+2. Set up the server-side `.env` with `APP_ENV=production`, `APP_DEBUG=false`, the HTTPS `APP_URL`, database credentials, and `INERTIA_SSR_ENABLED=false`. Keep the existing `APP_KEY` when updating an installation. For a fresh installation, generate the key once after Composer installs the dependencies and before running the deployment script. Give the site user write access to `storage` and `bootstrap/cache`.
+3. In **Laravel → Deployment**, keep **Install composer.json dependencies** enabled, turn **Install package.json dependencies** off, and turn **Run deployment script** on. In **Edit script**, paste the following. On Plesk for Linux, editing the script requires SSH access for the domain.
+
+   ```sh
+   PHP_BIN=/opt/plesk/php/8.3/bin/php sh deploy/plesk.sh
+   ```
+
+   For PHP 8.4, use the corresponding `8.4` path. If the domain shell uses a different path, set `PHP_BIN` to its PHP CLI executable or omit it if `php -v` already shows the domain's PHP version. The script runs from the application directory, clears stale config, applies pending migrations and rebuilds Laravel's caches.
+
+4. Keep **Manual** selected for the first deployment. Back up an existing production database before applying pending migrations. Click **Deploy**, then confirm the homepage, login page, and a public upload load over HTTPS. For push-to-deploy, add the webhook URL from the Plesk Deployment tab to GitHub for **push events**, then switch Plesk to **Automatic**.
+
+[Plesk Laravel Toolkit documentation](https://docs.plesk.com/en-US/obsidian/administrator-guide/website-management/laravel-toolkit.80010/)
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
